@@ -20,30 +20,28 @@
             </a>
           </li>
           <drop-down class="nav-item"
-                     title="5 Notifications"
+                     :title="auth.user.email"
                      title-classes="nav-link"
-                     icon="ti-bell">
-            <a class="dropdown-item" href="#">Notification 1</a>
-            <a class="dropdown-item" href="#">Notification 2</a>
-            <a class="dropdown-item" href="#">Notification 3</a>
-            <a class="dropdown-item" href="#">Notification 4</a>
-            <a class="dropdown-item" href="#">Another notification</a>
+                     icon="ti-user">
+            <div class="dropdown-item" @click="logout" href="#">Logout</div>
           </drop-down>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-settings"></i>
               <p>
                 Settings
               </p>
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div></nav>
 </template>
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
   computed: {
+     ...mapState(["auth" ]),
     routeName() {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);
@@ -55,6 +53,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions([ "logout" ]),
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },

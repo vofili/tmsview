@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-center align-items-center">
-    <card class="card mt-5 border w-50" title="Edit Profile">
+    <card class="card mt-5 border w-50" title="Login">
       <div>
         <form @submit.prevent>
           <div class="row">

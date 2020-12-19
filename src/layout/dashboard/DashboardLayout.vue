@@ -2,18 +2,20 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
-        <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel" />
         <sidebar-link
           to="/dashboard/transactions"
           name="Transactions"
           icon="ti-exchange-vertical"
         />
+
+        <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
+        
         <sidebar-link
           to="/dashboard/stats"
           name="User Profile"
           icon="ti-user"
         />
-        <sidebar-link
+        <!-- <sidebar-link
           to="/dashboard/table-list"
           name="Table List"
           icon="ti-view-list-alt"
@@ -33,7 +35,7 @@
           to="/dashboard/notifications"
           name="Notifications"
           icon="ti-bell"
-        />
+        /> -->
       </template>
       <mobile-menu>
         <li class="nav-item">

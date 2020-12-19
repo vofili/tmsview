@@ -23,8 +23,8 @@
     <div class="row">
 
       <div class="col-12">
-        <chart-card title="Users behavior"
-                    sub-title="24 Hours performance"
+        <chart-card title="Users"
+                    sub-title="Total users in the System"
                     :chart-data="usersChart.data"
                     :chart-options="usersChart.options">
           <span slot="footer">
@@ -39,7 +39,7 @@
       </div>
 
       <div class="col-md-6 col-12">
-        <chart-card title="Email Statistics"
+        <chart-card title="Transaction Statistics"
                     sub-title="Last campaign performance"
                     :chart-data="preferencesChart.data"
                     chart-type="Pie">
@@ -54,7 +54,7 @@
       </div>
 
       <div class="col-md-6 col-12">
-        <chart-card title="2015 Sales"
+        <chart-card title="2020 Purchase"
                     sub-title="All products including Taxes"
                     :chart-data="activityChart.data"
                     :chart-options="activityChart.options">
@@ -89,34 +89,26 @@ export default {
         {
           type: "warning",
           icon: "ti-server",
-          title: "Capacity",
-          value: "105GB",
+          title: "Total Transactions",
+          value: "₦5000",
           footerText: "Updated now",
           footerIcon: "ti-reload"
         },
         {
           type: "success",
           icon: "ti-wallet",
-          title: "Revenue",
-          value: "$1,345",
+          title: "Successful",
+          value: "₦3000",
           footerText: "Last day",
           footerIcon: "ti-calendar"
         },
         {
           type: "danger",
           icon: "ti-pulse",
-          title: "Errors",
-          value: "23",
+          title: "Failed",
+          value: "₦200",
           footerText: "In the last hour",
           footerIcon: "ti-timer"
-        },
-        {
-          type: "info",
-          icon: "ti-twitter-alt",
-          title: "Followers",
-          value: "+45",
-          footerText: "Updated now",
-          footerIcon: "ti-reload"
         }
       ],
       usersChart: {
