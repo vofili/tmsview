@@ -37,7 +37,7 @@
                 <td class="text-center">{{ transaction.maskedPan }}</td>
                 <td class="text-center">{{ transaction.stan }}</td>
                 <td class="text-center">
-                  {{ `₦${new Intl.NumberFormat().format(transaction.amount)}` }}
+                  {{ `₦${new Intl.NumberFormat().format(transaction.amount/100)}` }}
                 </td>
                 <!-- <td  class="text-center">{{ transaction.status}}</td>                 -->
                 <td class="text-center">
