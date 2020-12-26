@@ -13,12 +13,7 @@
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="ti-panel"></i>
-              <p>Stats</p>
-            </a>
-          </li>
+         
           <drop-down class="nav-item"
                      :title="auth.user.email"
                      title-classes="nav-link"

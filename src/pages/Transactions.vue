@@ -1,12 +1,88 @@
 <template>
   <div class="row transaction">
+    <div class="col-12 d-flex align-items-center">
+      <form>
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label for="inlineFormInput">Status</label>
+            <select class="form-control">
+              <option value="">Select Status</option>
+              <option value="successful">Successful</option>
+              <option value="failed">Failed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+          <div class="col-auto mt-2">
+            <label>Terminal Id</label>
+            <div class="input-group mb-2">
+              <input
+                type="text"
+                class="form-control"
+                id="inlineFormInputGroup"
+                placeholder="Terminal Id"
+              />
+            </div>
+          </div>
+          <div class="col-auto mt-2">
+            <label>Stan</label>
+            <div class="input-group mb-2">
+              <input
+                type="text"
+                class="form-control"
+                id="inlineFormInputGroup"
+                placeholder="Stan"
+              />
+            </div>
+          </div>
+          <div class="col-auto mt-2">
+            <label>Start Date</label>
+            <div class="input-group mb-2">
+              <input
+                type="date"
+                class="form-control"
+                id="inlineFormInputGroup"
+                placeholder="Start Date"
+              />
+            </div>
+          </div>
+
+          <div class="col-auto mt-2">
+            <label>End Date</label>
+            <div class="input-group mb-2">
+              <input
+                type="date"
+                class="form-control"
+                id="inlineFormInputGroup"
+                placeholder="End Date"
+              />
+            </div>
+          </div>
+
+          <div class="col-auto mt-2">
+            <div
+              class="spinner-grow"
+              role="status"
+              v-if="loading === true"
+            ></div>
+            <button
+              type="submit"
+              class="btn btn-primary mb-2 mt-4"
+              @click="refresh('filter')"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
     <!-- <h4>Transactions</h4> -->
-    <div class="spinner-grow" role="status" v-if="loading === true"></div>
-
-    <button class="btn btn-info" @click="refresh()">Refresh</button>
+    <div class="p-4 col-12">
+      <div class="spinner-grow" role="status" v-if="loading === true"></div>
+      <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
+    </div>
 
     <div class="col-12">
       <card class="card-plain">
@@ -20,7 +96,7 @@
                 <th scope="col" class="text-center">Card Number</th>
                 <th scope="col" class="text-center">Stan</th>
                 <th scope="col" class="text-center">Amount</th>
-                 <th scope="col" class="text-center">Location</th>
+                <th scope="col" class="text-center">Location</th>
                 <!-- <th scope="col"  class="text-center">Status</th> -->
                 <th scope="col" class="text-center">Response Code</th>
                 <th scope="col" class="text-center">Message</th>
@@ -38,17 +114,27 @@
                 <td class="text-center">{{ transaction.maskedPan }}</td>
                 <td class="text-center">{{ transaction.stan }}</td>
                 <td class="text-center">
-                  {{ `₦${format.format(transaction.amount.toFixed(2)/100)}` }}
+                  {{ `₦${format.format(transaction.amount.toFixed(2) / 100)}` }}
                 </td>
                 <td class="text-center">
-                  {{ transaction.location ? `${transaction.location.city}, ${transaction.location.country}` : "NULL"  }}
+                  {{
+                    transaction.location
+                      ? `${transaction.location.city}, ${transaction.location.country}`
+                      : "NULL"
+                  }}
                 </td>
                 <!-- <td  class="text-center">{{ transaction.status}}</td>                 -->
                 <td class="text-center">
-                  {{ transaction.response ? transaction.response.responseCode : "" }}
+                  {{
+                    transaction.response
+                      ? transaction.response.responseCode
+                      : ""
+                  }}
                 </td>
                 <td class="text-center">
-                  {{ transaction.response ? transaction.response.description : "" }}
+                  {{
+                    transaction.response ? transaction.response.description : ""
+                  }}
                 </td>
                 <td class="text-center">
                   {{ moment(transaction.createdAt).format("Y-M-D h:mm:ss a") }}
@@ -58,6 +144,28 @@
           </table>
         </div>
       </card>
+    </div>
+
+    <div class="mt-2 d-flex justify-content-end align-items-center">
+      <div class="spinner-grow" role="status" v-if="loading === true"></div>
+      <div class="p-2" v-if="hasPrevPage === true">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('previous')"
+        >
+          Previous Page
+        </button>
+      </div>
+      <div class="p-2" v-if="hasNextPage === true">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('next')"
+        >
+          Next Page
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -73,21 +181,51 @@ export default {
       errorMsg: "",
       loading: false,
       moment,
-      format: new Intl.NumberFormat('en-US', {
+      format: new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })
+      }),
+      page: 1,
+      totalDocs: 37,
+      limit: 20,
+      totalPages: 0,
+      hasPrevPage: false,
+      hasNextPage: true,
+      prevPage: null,
+      nextPage: null,
     };
   },
   methods: {
-    async refresh() {
+    async refresh(mode) {
       try {
         this.loading = true;
-        const res = await axios.get(
-          "https://advanced-tms.herokuapp.com/api/v1/transactions"
+        let payload = { page: this.page };
+        switch (mode) {
+          case "next":
+            payload = { page: this.nextPage };
+            break;
+          case "previous":
+            payload = { page: this.prevPage };
+            break;
+        }
+        const res = await axios.post(
+          "https://advanced-tms.herokuapp.com/api/v1/transactions/details",
+          payload
         );
-        const { transactions } = res.data;
-        this.transactions = transactions;
+        const {
+          docs,
+          hasNextPage,
+          hasPrevPage,
+          totalPages,
+          prevPage,
+          nextPage,
+        } = res.data.transactions;
+        this.transactions = docs;
+        this.hasPrevPage = hasPrevPage;
+        this.hasNextPage = hasNextPage;
+        this.totalPages = totalPages;
+        this.prevPage = prevPage;
+        this.nextPage = nextPage;
       } catch (err) {
         console.log(err);
         this.error = true;
@@ -99,11 +237,27 @@ export default {
   async mounted() {
     try {
       this.loading = true;
-      const res = await axios.get(
-        "https://advanced-tms.herokuapp.com/api/v1/transactions"
+      const res = await axios.post(
+        "https://advanced-tms.herokuapp.com/api/v1/transactions/details",
+        {
+          page: this.page,
+        }
       );
-      const { transactions } = res.data;
-      this.transactions = transactions;
+      const {
+        docs,
+        hasNextPage,
+        hasPrevPage,
+        totalPages,
+        prevPage,
+        nextPage,
+      } = res.data.transactions;
+      this.transactions = docs;
+      this.hasPrevPage = hasPrevPage;
+      this.hasNextPage = hasNextPage;
+      this.totalPages = totalPages;
+      this.prevPage = prevPage;
+      this.nextPage = nextPage;
+    
     } catch (err) {
       console.log(err);
       this.error = true;
@@ -114,7 +268,7 @@ export default {
 };
 </script>
 <style scoped >
-  .transaction{
-    font-size: 12px;
-  }
+.transaction {
+  font-size: 12px;
+}
 </style>
