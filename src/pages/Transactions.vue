@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row transaction">
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
@@ -20,6 +20,7 @@
                 <th scope="col" class="text-center">Card Number</th>
                 <th scope="col" class="text-center">Stan</th>
                 <th scope="col" class="text-center">Amount</th>
+                 <th scope="col" class="text-center">Location</th>
                 <!-- <th scope="col"  class="text-center">Status</th> -->
                 <th scope="col" class="text-center">Response Code</th>
                 <th scope="col" class="text-center">Message</th>
@@ -37,7 +38,10 @@
                 <td class="text-center">{{ transaction.maskedPan }}</td>
                 <td class="text-center">{{ transaction.stan }}</td>
                 <td class="text-center">
-                  {{ `₦${new Intl.NumberFormat().format(transaction.amount/100)}` }}
+                  {{ `₦${format.format(transaction.amount.toFixed(2)/100)}` }}
+                </td>
+                <td class="text-center">
+                  {{ transaction.location ? `${transaction.location.city}, ${transaction.location.country}` : "NULL"  }}
                 </td>
                 <!-- <td  class="text-center">{{ transaction.status}}</td>                 -->
                 <td class="text-center">
@@ -69,6 +73,10 @@ export default {
       errorMsg: "",
       loading: false,
       moment,
+      format: new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
     };
   },
   methods: {
@@ -105,5 +113,8 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped >
+  .transaction{
+    font-size: 12px;
+  }
 </style>
