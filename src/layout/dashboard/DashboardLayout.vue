@@ -38,30 +38,7 @@
         /> -->
       </template>
       <mobile-menu>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-panel"></i>
-            <p>Stats</p>
-          </a>
-        </li>
-        <drop-down
-          class="nav-item"
-          title="5 Notifications"
-          title-classes="nav-link"
-          icon="ti-bell"
-        >
-          <a class="dropdown-item">Notification 1</a>
-          <a class="dropdown-item">Notification 2</a>
-          <a class="dropdown-item">Notification 3</a>
-          <a class="dropdown-item">Notification 4</a>
-          <a class="dropdown-item">Another notification</a>
-        </drop-down>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-settings"></i>
-            <p>Settings</p>
-          </a>
-        </li>
+        
         <li class="divider"></li>
       </mobile-menu>
     </side-bar>
@@ -106,3 +83,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .wrapper{
+    font-size: 12px !important;
+  }
+</style>

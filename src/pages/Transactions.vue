@@ -59,11 +59,6 @@
           </div>
 
           <div class="col-auto mt-2">
-            <div
-              class="spinner-grow"
-              role="status"
-              v-if="loading === true"
-            ></div>
             <button
               type="submit"
               class="btn btn-primary mb-2 mt-4"
@@ -75,12 +70,12 @@
         </div>
       </form>
     </div>
+    <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
     <!-- <h4>Transactions</h4> -->
     <div class="p-4 col-12">
-      <div class="spinner-grow" role="status" v-if="loading === true"></div>
       <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
     </div>
 
@@ -108,7 +103,7 @@
                 v-for="(transaction, index) in transactions"
                 :key="transaction._id"
               >
-                <th scope="row">{{ index + 1 }}</th>
+                <th class="text-center">{{ index + 1 }}</th>
                 <td class="text-center">{{ transaction.product }}</td>
                 <td class="text-center">{{ transaction.terminalId }}</td>
                 <td class="text-center">{{ transaction.maskedPan }}</td>
@@ -147,7 +142,6 @@
     </div>
 
     <div class="mt-2 d-flex justify-content-end align-items-center">
-      <div class="spinner-grow" role="status" v-if="loading === true"></div>
       <div class="p-2" v-if="hasPrevPage === true">
         <button
           type="submit"
@@ -270,5 +264,11 @@ export default {
 <style scoped >
 .transaction {
   font-size: 12px;
+}
+th {
+  font-size: 12px !important;
+}
+.spinner-grow {
+  position: fixed;
 }
 </style>
