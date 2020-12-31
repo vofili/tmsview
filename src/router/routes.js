@@ -13,6 +13,8 @@ import TableList from "@/pages/TableList.vue";
 import Transactions from "@/pages/Transactions.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue"
+import AddTerminal from "@/pages/AddTerminal.vue"
+import WalletReports from "@/pages/WalletReports.vue";
 
 const routes = [
   {
@@ -25,11 +27,6 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login
-  },
-  {
-    path: "/create-user",
-    name: "login",
-    component: Register
   },
   {
     path: "/dashboard",
@@ -46,14 +43,29 @@ const routes = [
         component: UserProfile
       },
       {
+        path: "add-terminal",
+        name: "add-terminal",
+        component: AddTerminal
+      },
+      {
         path: "transactions",
         name: "transactions",
         component: Transactions
       },
       {
+        path: "wallet-reports",
+        name: "wallet-reports",
+        component: WalletReports
+      },
+      {
         path: "notifications",
         name: "notifications",
         component: Notifications
+      },
+      {
+        path: "create-user",
+        name: "crate-user",
+        component: Register
       },
       {
         path: "icons",

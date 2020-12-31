@@ -69,12 +69,28 @@
                 />
               </div>
               <div class="col-md-6">
+                <input
+                  type="text"
+                  class="form-control border"
+                  label="Merchant Id"
+                  placeholder="Merchant Id"
+                  v-model="user.merchantId"
+                />
+              </div>
+              <div class="col-md-6">
                     <select class="form-control" v-model="user.userType" >
                     <option value="">Select a User Type</option>
                     <option value="user">User</option>
                     <option value="admin"> Admin</option>
                     <option value="super-admin">Super Admin</option>
                 </select>
+              </div>
+              <div class="col-md-6">
+                <label></label>
+                <textarea rows="5" class="form-control border-input"
+                            placeholder="Wallet Ids Separated by commas"
+                            v-model="terminals">
+                </textarea>
               </div>
             </div>
 
@@ -107,8 +123,10 @@ export default {
         password: "",
         userType: "",
         phoneNumber: "",
-        password_confirmation: ""
+        password_confirmation: "",
+        merchantId: ""
       },
+      terminals: "",
     };
   },
   computed: {
@@ -117,13 +135,16 @@ export default {
   methods: {
     ...mapActions(["createUser"]),
     submit() {
-      this.createUser(this.user);
+        const terminals = this.terminals.split(',');
+        const user = { ...this.user, terminals }
+        
+        this.createUser(user);
     },
   },
   mounted() {
-    if (this.auth.user !== null) {
-      this.$router.push("/dashboard/transactions");
-    }
+    // if (this.auth.user !== null) {
+    //   this.$router.push("/dashboard/transactions");
+    // }
   },
 };
 </script>

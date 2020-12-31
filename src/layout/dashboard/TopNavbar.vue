@@ -13,6 +13,14 @@
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <div class="nav-link">
+              <i class="ti-wallet"></i>
+              <p>
+                Wallet Id: {{ auth.user.walletId}}
+              </p>
+            </div>
+          </li>
          
           <drop-down class="nav-item"
                      :title="auth.user.email"

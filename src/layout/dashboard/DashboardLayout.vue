@@ -11,9 +11,24 @@
         <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
         
         <sidebar-link
-          to="/dashboard/stats"
-          name="User Profile"
-          icon="ti-user"
+          to="/dashboard/add-terminal"
+          name="Add Terminal"
+          icon="ti-control-stop"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
+          to="/dashboard/wallet-reports"
+          name="Wallet Reports"
+          icon="ti-wallet"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
+          to="/dashboard/create-user"
+          name="Create User"
+          icon="ti-plus"
+          v-if="auth.user.userType === 'super-admin'"
         />
         <!-- <sidebar-link
           to="/dashboard/table-list"
@@ -25,22 +40,23 @@
           name="Typography"
           icon="ti-text"
         />
-        <sidebar-link
-          to="/dashboard/icons"
-          name="Icons"
-          icon="ti-pencil-alt2"
-        />
+        
         <sidebar-link to="/dashboard/maps" name="Map" icon="ti-map" />
         <sidebar-link
           to="/dashboard/notifications"
           name="Notifications"
           icon="ti-bell"
         /> -->
-        <sidebar-link
+        <!-- <sidebar-link
           to="/dashboard/notifications"
           name="Notifications"
           icon="ti-bell"
-        />
+        /> -->
+        <!-- <sidebar-link
+          to="/dashboard/icons"
+          name="Icons"
+          icon="ti-pencil-alt2"
+        /> -->
       </template>
       <mobile-menu>
         

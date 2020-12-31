@@ -1,6 +1,6 @@
 <template>
   <div class="row transaction">
-    <div class="col-12 d-flex align-items-center">
+    <!-- <div class="col-12 d-flex align-items-center">
       <form>
         <div class="form-row align-items-center">
           <div class="col-auto">
@@ -69,7 +69,7 @@
           </div>
         </div>
       </form>
-    </div>
+    </div> -->
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
@@ -86,53 +86,33 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
-                <th scope="col" class="text-center">Transaction Type</th>
+                <th scope="col" class="text-center">Wallet Id</th>
                 <th scope="col" class="text-center">Terminal Id</th>
-                <th scope="col" class="text-center">Card Number</th>
-                <th scope="col" class="text-center">Stan</th>
+                <th scope="col" class="text-center">Type</th>
                 <th scope="col" class="text-center">Amount</th>
-                <th scope="col" class="text-center">Location</th>
-                <!-- <th scope="col"  class="text-center">Status</th> -->
-                <th scope="col" class="text-center">Response Code</th>
-                <th scope="col" class="text-center">Message</th>
+                <th scope="col" class="text-center">Previous Balance</th>
+                <th scope="col" class="text-center">New Balance</th>
                 <th scope="col" class="text-center">Date</th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(transaction, index) in transactions"
-                :key="transaction._id"
+                v-for="(hist, index) in history"
+                :key="hist._id"
               >
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ transaction.product }}</td>
-                <td class="text-center">{{ transaction.terminalId }}</td>
-                <td class="text-center">{{ transaction.maskedPan }}</td>
-                <td class="text-center">{{ transaction.stan }}</td>
+                <td class="text-center">{{ hist.walletid }}</td>
+                <td class="text-center">{{ hist.terminalId }}</td>
+                <td class="text-center">{{ hist.type }}</td>
+                <td class="text-center">{{ `₦${format.format(hist.amount.toFixed(2) )}`  }}</td>
                 <td class="text-center">
-                  {{ `₦${format.format(transaction.amount.toFixed(2) / 100)}` }}
+                  {{ `₦${format.format(hist.previousBalance.toFixed(2) )}` }}
                 </td>
                 <td class="text-center">
-                  {{
-                    transaction.location
-                      ? `${transaction.location.city}, ${transaction.location.country}`
-                      : "NULL"
-                  }}
-                </td>
-                <!-- <td  class="text-center">{{ transaction.status}}</td>                 -->
-                <td class="text-center">
-                  {{
-                    transaction.response
-                      ? transaction.response.responseCode
-                      : ""
-                  }}
+                  {{ `₦${format.format(hist.newBalance.toFixed(2) )}` }}
                 </td>
                 <td class="text-center">
-                  {{
-                    transaction.response ? transaction.response.description : ""
-                  }}
-                </td>
-                <td class="text-center">
-                  {{ moment(transaction.createdAt).format("Y-M-D h:mm:ss a") }}
+                  {{ moment(hist.createdAt).format("Y-M-D h:mm:ss a") }}
                 </td>
               </tr>
             </tbody>
@@ -171,7 +151,7 @@ export default {
   data() {
     return {
       error: false,
-      transactions: [],
+      history: [],
       errorMsg: "",
       loading: false,
       moment,
@@ -203,7 +183,7 @@ export default {
             break;
         }
         const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/transactions/details`,
+          `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
           payload
         );
         const {
@@ -213,8 +193,8 @@ export default {
           totalPages,
           prevPage,
           nextPage,
-        } = res.data.transactions;
-        this.transactions = docs;
+        } = res.data.history;
+        this.history = docs;
         this.hasPrevPage = hasPrevPage;
         this.hasNextPage = hasNextPage;
         this.totalPages = totalPages;
@@ -223,7 +203,7 @@ export default {
       } catch (err) {
         console.log(err);
         this.error = true;
-        this.errorMsg = "Unable to Fetch Transactions";
+        this.errorMsg = "Unable to Fetch History";
       }
       this.loading = false;
     },
@@ -232,7 +212,7 @@ export default {
     try {
       this.loading = true;
       const res = await axios.post(
-        "https://advanced-tms.herokuapp.com/api/v1/transactions/details",
+        `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
         {
           page: this.page,
         }
@@ -244,8 +224,8 @@ export default {
         totalPages,
         prevPage,
         nextPage,
-      } = res.data.transactions;
-      this.transactions = docs;
+      } = res.data.history;
+      this.history = docs;
       this.hasPrevPage = hasPrevPage;
       this.hasNextPage = hasNextPage;
       this.totalPages = totalPages;
@@ -255,7 +235,7 @@ export default {
     } catch (err) {
       console.log(err);
       this.error = true;
-      this.errorMsg = "Unable to Fetch Transactions";
+      this.errorMsg = "Unable to Fetch History";
     }
     this.loading = false;
   },
