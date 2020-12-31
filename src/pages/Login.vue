@@ -36,6 +36,7 @@
 
             <div class="text-center">
               <p-button type="info" round @click.native.prevent="loginUser">
+                <div  class="spinner-grow" role="status" v-if="loading.show === true"></div>
                 Login
               </p-button>
             </div>
@@ -59,7 +60,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["auth"]),
+    ...mapState(["auth", "loading"]),
   },
   methods: {
     ...mapActions(["login"]),

@@ -6,7 +6,52 @@
 </template>
 
 <script>
-export default {};
+import { mapState, mapMutations } from "vuex"
+import Notify from "./pages/Notifications/Notify"
+import jwt from "jsonwebtoken";
+import setAuthToken from "./utils/setAuthToken";
+export default {
+   created() {
+    if (localStorage.jwtToken) {
+      const token = localStorage.jwtToken
+
+      //decode the jwt token
+      const user = jwt.decode(token, process.env.VUE_APP_JWT_KEY);
+
+      const currentTime = Date.now() / 1000;
+      if (user.exp < currentTime) {
+        localStorage.removeItem("jwtToken");
+      } else {
+        //set axios header
+        setAuthToken(token);
+        this.setUser(user);
+      }
+    }
+  },
+  computed: {
+    ...mapState(["auth", "notification"]),
+    watchNotification() {
+      return this.notification.show;
+    },
+  },
+  watch: {
+    watchNotification(newVal, oldVal) {
+      if (oldVal === false && newVal === true) this.notifyVue();
+    },
+  },
+  methods: {
+    ...mapMutations(["setUser"]),
+    notifyVue() {
+      this.$notify({
+        component: Notify,
+        icon: "ti-bell",
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: this.notification.type
+      });
+    }
+  }
+};
 </script>
 
 <style lang="scss">

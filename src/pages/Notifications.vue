@@ -103,8 +103,8 @@ export default {
       this.$notify({
         component: NotificationTemplate,
         icon: "ti-gift",
-        horizontalAlign: horizontalAlign,
-        verticalAlign: verticalAlign,
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
         type: this.type[color]
       });
     }

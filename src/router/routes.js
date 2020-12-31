@@ -12,6 +12,7 @@ import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Transactions from "@/pages/Transactions.vue";
 import Login from "@/pages/Login.vue";
+import Register from "@/pages/Register.vue"
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login
+  },
+  {
+    path: "/create-user",
+    name: "login",
+    component: Register
   },
   {
     path: "/dashboard",

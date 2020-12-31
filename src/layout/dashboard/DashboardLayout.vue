@@ -36,6 +36,11 @@
           name="Notifications"
           icon="ti-bell"
         /> -->
+        <sidebar-link
+          to="/dashboard/notifications"
+          name="Notifications"
+          icon="ti-bell"
+        />
       </template>
       <mobile-menu>
         
