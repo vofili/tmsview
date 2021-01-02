@@ -9,6 +9,13 @@
         />
 
         <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
+
+        <sidebar-link
+          to="/dashboard/terminals"
+          name="View Terminals"
+          icon="ti-control-stop"
+          v-if="auth.user.userType === 'super-admin'"
+        />
         
         <sidebar-link
           to="/dashboard/add-terminal"
@@ -30,6 +37,19 @@
           icon="ti-plus"
           v-if="auth.user.userType === 'super-admin'"
         />
+        <sidebar-link
+          to="/dashboard/create-merchant"
+          name="Create Merchant"
+          icon="ti-medall"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+        <sidebar-link
+          to="/dashboard/merchants"
+          name="View Merchants"
+          icon="ti-medall"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+        
         <!-- <sidebar-link
           to="/dashboard/table-list"
           name="Table List"
@@ -52,11 +72,11 @@
           name="Notifications"
           icon="ti-bell"
         /> -->
-        <!-- <sidebar-link
+        <sidebar-link
           to="/dashboard/icons"
           name="Icons"
           icon="ti-pencil-alt2"
-        /> -->
+        />
       </template>
       <mobile-menu>
         

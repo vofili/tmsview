@@ -232,7 +232,7 @@ export default {
     try {
       this.loading = true;
       const res = await axios.post(
-        "https://advanced-tms.herokuapp.com/api/v1/transactions/details",
+        `${process.env.VUE_APP_API_URL}/transactions/details`,
         {
           page: this.page,
         }

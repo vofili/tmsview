@@ -15,6 +15,9 @@ import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue"
 import AddTerminal from "@/pages/AddTerminal.vue"
 import WalletReports from "@/pages/WalletReports.vue";
+import AddMerchant from "@/pages/AddMerchant.vue"
+import Merchants from "@/pages/Merchant.vue"
+import Terminals from "@/pages/Terminals.vue"
 
 const routes = [
   {
@@ -66,6 +69,21 @@ const routes = [
         path: "create-user",
         name: "crate-user",
         component: Register
+      },
+      {
+        path: "create-merchant",
+        name: "crate-merchant",
+        component: AddMerchant
+      },
+      {
+        path: "merchants",
+        name: "merchant",
+        component: Merchants
+      },
+      {
+        path: "terminals",
+        name: "terminals",
+        component: Terminals
       },
       {
         path: "icons",

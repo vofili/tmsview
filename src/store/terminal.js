@@ -17,7 +17,7 @@ export default {
           commit("setNotification", { type: "success", message });
           commit("setLoading", false);
 
-          router.push("/dashboard");
+          router.push("/dashboard/terminals");
 
         })
         .catch((err) => {

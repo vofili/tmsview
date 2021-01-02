@@ -19,6 +19,7 @@
     "moment": "^2.29.1",
     "vue": "^2.6.10",
     "vue-clickaway": "^2.1.0",
+    "vue-multiselect": "^2.1.6",
     "vue-notifyjs": "^0.3.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.6.0"

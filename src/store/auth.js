@@ -13,8 +13,8 @@ export default {
   },
   actions: {
     login({ commit }, data) {
-        commit("setLoading", true);
-        axios
+      commit("setLoading", true);
+      axios
         .post(`${url}/auth/loginUser`, data)
         .then((res) => {
           const { token, message } = res.data;
@@ -28,8 +28,8 @@ export default {
           localStorage.setItem("jwtToken", token);
 
           //decode token and set auth user state
-          const user = jwt.decode(token, key);         
-          
+          const user = jwt.decode(token, key);
+
           commit("setUser", user);
           router.push("/dashboard/transactions");
 
@@ -38,24 +38,40 @@ export default {
           const { message } = err.response.data;
           commit("setNotification", { type: "danger", message });
           commit("setLoading", false);
-        });     
-    },  
+        });
+    },
     createUser({ commit }, data) {
       commit("setLoading", true);
       axios
-      .post(`${url}/auth/createUser`, data)
-      .then((res) => {
-        commit("setNotification", { type: "success", message: res.data.message });
-        commit("setLoading", false);
+        .post(`${url}/auth/createUser`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
 
-        router.push("/login");
-      })
-      .catch((err) => {
-        const { message } = err.response.data;
-        commit("setNotification", { type: "danger", message });
-        commit("setLoading", false);
-      });     
-  },    
+          router.push("/login");
+        })
+        .catch((err) => {
+          const { message } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          commit("setLoading", false);
+        });
+    },
+    createMerchant({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/create-merchant`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+
+          router.push("/dashboard/merchants");
+        })
+        .catch((err) => {
+          const { message } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          commit("setLoading", false);
+        });
+    },
     logout({ commit }) {
       commit("clearUser");
       localStorage.removeItem("jwtToken");

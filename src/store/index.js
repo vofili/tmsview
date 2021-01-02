@@ -4,6 +4,7 @@ import auth from './auth'
 import notification from "./notification"
 import loading from "./loading"
 import terminal from "./terminal"
+import utils from "./utils"
 
 Vue.use(Vuex)
 
@@ -12,7 +13,8 @@ export default new Vuex.Store({
     auth,
     notification,
     loading,
-    terminal
+    terminal,
+    utils
   }
 })
 

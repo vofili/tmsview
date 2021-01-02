@@ -96,7 +96,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
+              <!-- <tr
                 v-for="(hist, index) in history"
                 :key="hist._id"
               >
@@ -114,7 +114,7 @@
                 <td class="text-center">
                   {{ moment(hist.createdAt).format("Y-M-D h:mm:ss a") }}
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -171,73 +171,73 @@ export default {
   },
   methods: {
     async refresh(mode) {
-      try {
-        this.loading = true;
-        let payload = { page: this.page };
-        switch (mode) {
-          case "next":
-            payload = { page: this.nextPage };
-            break;
-          case "previous":
-            payload = { page: this.prevPage };
-            break;
-        }
-        const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-          payload
-        );
-        const {
-          docs,
-          hasNextPage,
-          hasPrevPage,
-          totalPages,
-          prevPage,
-          nextPage,
-        } = res.data.history;
-        this.history = docs;
-        this.hasPrevPage = hasPrevPage;
-        this.hasNextPage = hasNextPage;
-        this.totalPages = totalPages;
-        this.prevPage = prevPage;
-        this.nextPage = nextPage;
-      } catch (err) {
-        console.log(err);
-        this.error = true;
-        this.errorMsg = "Unable to Fetch History";
-      }
-      this.loading = false;
+    //   try {
+    //     this.loading = true;
+    //     let payload = { page: this.page };
+    //     switch (mode) {
+    //       case "next":
+    //         payload = { page: this.nextPage };
+    //         break;
+    //       case "previous":
+    //         payload = { page: this.prevPage };
+    //         break;
+    //     }
+    //     const res = await axios.post(
+    //       `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
+    //       payload
+    //     );
+    //     const {
+    //       docs,
+    //       hasNextPage,
+    //       hasPrevPage,
+    //       totalPages,
+    //       prevPage,
+    //       nextPage,
+    //     } = res.data.history;
+    //     this.history = docs;
+    //     this.hasPrevPage = hasPrevPage;
+    //     this.hasNextPage = hasNextPage;
+    //     this.totalPages = totalPages;
+    //     this.prevPage = prevPage;
+    //     this.nextPage = nextPage;
+    //   } catch (err) {
+    //     console.log(err);
+    //     this.error = true;
+    //     this.errorMsg = "Unable to Fetch History";
+    //   }
+    //   this.loading = false;
     },
   },
   async mounted() {
-    try {
-      this.loading = true;
-      const res = await axios.post(
-        `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-        {
-          page: this.page,
-        }
-      );
-      const {
-        docs,
-        hasNextPage,
-        hasPrevPage,
-        totalPages,
-        prevPage,
-        nextPage,
-      } = res.data.history;
-      this.history = docs;
-      this.hasPrevPage = hasPrevPage;
-      this.hasNextPage = hasNextPage;
-      this.totalPages = totalPages;
-      this.prevPage = prevPage;
-      this.nextPage = nextPage;
+    // try {
+    //   this.loading = true;
+    //   const res = await axios.post(
+    //     `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
+    //     {
+    //       page: this.page,
+    //     }
+    //   );
+    //   const {
+    //     docs,
+    //     hasNextPage,
+    //     hasPrevPage,
+    //     totalPages,
+    //     prevPage,
+    //     nextPage,
+    //   } = res.data.history;
+    //   this.history = docs;
+    //   this.hasPrevPage = hasPrevPage;
+    //   this.hasNextPage = hasNextPage;
+    //   this.totalPages = totalPages;
+    //   this.prevPage = prevPage;
+    //   this.nextPage = nextPage;
     
-    } catch (err) {
-      console.log(err);
-      this.error = true;
-      this.errorMsg = "Unable to Fetch History";
-    }
-    this.loading = false;
+    // } catch (err) {
+    //   console.log(err);
+    //   this.error = true;
+    //   this.errorMsg = "Unable to Fetch History";
+    // }
+    // this.loading = false;
   },
 };
 </script>
