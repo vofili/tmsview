@@ -86,35 +86,25 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
-                <th scope="col" class="text-center">Wallet Id</th>
                 <th scope="col" class="text-center">Terminal Id</th>
-                <th scope="col" class="text-center">Type</th>
-                <th scope="col" class="text-center">Amount</th>
-                <th scope="col" class="text-center">Previous Balance</th>
-                <th scope="col" class="text-center">New Balance</th>
-                <th scope="col" class="text-center">Date</th>
+                <th scope="col" class="text-center">Serial No</th>
+                <!-- <th scope="col" class="text-center">Current Version</th> -->
+                <th scope="col" class="text-center">Merchant Id</th>
+                <th scope="col" class="text-center">Merchant Name</th>
               </tr>
             </thead>
             <tbody>
-              <!-- <tr
-                v-for="(hist, index) in history"
-                :key="hist._id"
+              <tr
+                v-for="(terminal, index) in terminals"
+                :key="terminal._id"
               >
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ hist.walletId }}</td>
-                <td class="text-center">{{ hist.terminalId }}</td>
-                <td class="text-center">{{ hist.type }}</td>
-                <td class="text-center">{{ `₦${format.format(hist.amount.toFixed(2) )}`  }}</td>
-                <td class="text-center">
-                  {{ `₦${format.format(hist.previousBalance.toFixed(2) )}` }}
-                </td>
-                <td class="text-center">
-                  {{ `₦${format.format(hist.newBalance.toFixed(2) )}` }}
-                </td>
-                <td class="text-center">
-                  {{ moment(hist.createdAt).format("Y-M-D h:mm:ss a") }}
-                </td>
-              </tr> -->
+                <td class="text-center">{{ terminal.terminalId }}</td>
+                <td class="text-center">{{ terminal.serialNo }}</td>
+                <!-- <td class="text-center">{{ terminal.currentVersion }}</td> -->
+                <td class="text-center">{{ terminal.merchantId }}</td>
+                <td class="text-center">{{ getMerchantName(terminal.agentId) }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -146,12 +136,13 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import { mapState, mapActions } from "vuex"
 export default {
   components: {},
   data() {
     return {
       error: false,
-      history: [],
+      terminals: [],
       errorMsg: "",
       loading: false,
       moment,
@@ -169,75 +160,84 @@ export default {
       nextPage: null,
     };
   },
+  computed: {
+    ...mapState(["utils"]),
+  },
   methods: {
+    ...mapActions(["getMerchants"]),
     async refresh(mode) {
-    //   try {
-    //     this.loading = true;
-    //     let payload = { page: this.page };
-    //     switch (mode) {
-    //       case "next":
-    //         payload = { page: this.nextPage };
-    //         break;
-    //       case "previous":
-    //         payload = { page: this.prevPage };
-    //         break;
-    //     }
-    //     const res = await axios.post(
-    //       `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-    //       payload
-    //     );
-    //     const {
-    //       docs,
-    //       hasNextPage,
-    //       hasPrevPage,
-    //       totalPages,
-    //       prevPage,
-    //       nextPage,
-    //     } = res.data.history;
-    //     this.history = docs;
-    //     this.hasPrevPage = hasPrevPage;
-    //     this.hasNextPage = hasNextPage;
-    //     this.totalPages = totalPages;
-    //     this.prevPage = prevPage;
-    //     this.nextPage = nextPage;
-    //   } catch (err) {
-    //     console.log(err);
-    //     this.error = true;
-    //     this.errorMsg = "Unable to Fetch History";
-    //   }
-    //   this.loading = false;
+      try {
+        this.loading = true;
+        let payload = { page: this.page };
+        switch (mode) {
+          case "next":
+            payload = { page: this.nextPage };
+            break;
+          case "previous":
+            payload = { page: this.prevPage };
+            break;
+        }
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/terminals/get`,
+          payload
+        );
+        const {
+          docs,
+          hasNextPage,
+          hasPrevPage,
+          totalPages,
+          prevPage,
+          nextPage,
+        } = res.data.terminals;
+        this.terminals = docs;
+        this.hasPrevPage = hasPrevPage;
+        this.hasNextPage = hasNextPage;
+        this.totalPages = totalPages;
+        this.prevPage = prevPage;
+        this.nextPage = nextPage;
+      } catch (err) {
+        console.log(err);
+        this.error = true;
+        this.errorMsg = "Unable to Fetch Terminals";
+      }
+      this.loading = false;
     },
+    getMerchantName(id){
+        const merchant = this.utils.merchants.filter(el => el._id === id);
+        return merchant.length !== 0 ? merchant[0].merchantName : ""
+    }
   },
   async mounted() {
-    // try {
-    //   this.loading = true;
-    //   const res = await axios.post(
-    //     `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-    //     {
-    //       page: this.page,
-    //     }
-    //   );
-    //   const {
-    //     docs,
-    //     hasNextPage,
-    //     hasPrevPage,
-    //     totalPages,
-    //     prevPage,
-    //     nextPage,
-    //   } = res.data.history;
-    //   this.history = docs;
-    //   this.hasPrevPage = hasPrevPage;
-    //   this.hasNextPage = hasNextPage;
-    //   this.totalPages = totalPages;
-    //   this.prevPage = prevPage;
-    //   this.nextPage = nextPage;
+    try {
+      this.loading = true;
+      const res = await axios.post(
+        `${process.env.VUE_APP_API_URL}/terminals/get`,
+        {
+          page: this.page,
+        }
+      );
+      const {
+        docs,
+        hasNextPage,
+        hasPrevPage,
+        totalPages,
+        prevPage,
+        nextPage,
+      } = res.data.terminals;
+      this.terminals = docs;
+      this.hasPrevPage = hasPrevPage;
+      this.hasNextPage = hasNextPage;
+      this.totalPages = totalPages;
+      this.prevPage = prevPage;
+      this.nextPage = nextPage;
     
-    // } catch (err) {
-    //   console.log(err);
-    //   this.error = true;
-    //   this.errorMsg = "Unable to Fetch History";
-    // }
-    // this.loading = false;
+    } catch (err) {
+      console.log(err);
+      this.error = true;
+      this.errorMsg = "Unable to Fetch Terminals";
+    }
+    this.loading = false;
+    this.getMerchants();
   },
 };
 </script>

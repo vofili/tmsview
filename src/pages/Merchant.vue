@@ -86,35 +86,31 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
+                <th scope="col" class="text-center">Merchant Name</th>
+                <th scope="col" class="text-center">Company Name</th>
+                <th scope="col" class="text-center">Email</th>
                 <th scope="col" class="text-center">Wallet Id</th>
-                <th scope="col" class="text-center">Terminal Id</th>
-                <th scope="col" class="text-center">Type</th>
-                <th scope="col" class="text-center">Amount</th>
-                <th scope="col" class="text-center">Previous Balance</th>
-                <th scope="col" class="text-center">New Balance</th>
-                <th scope="col" class="text-center">Date</th>
+                <th scope="col" class="text-center">Phone Number</th>
+                <th scope="col" class="text-center">Address</th>
+                <th scope="col" class="text-center">State</th>
+                <th scope="col" class="text-center">Country</th>
               </tr>
             </thead>
             <tbody>
-              <!-- <tr
-                v-for="(hist, index) in history"
-                :key="hist._id"
+              <tr
+                v-for="(merchant, index) in merchants"
+                :key="merchant._id"
               >
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ hist.walletId }}</td>
-                <td class="text-center">{{ hist.terminalId }}</td>
-                <td class="text-center">{{ hist.type }}</td>
-                <td class="text-center">{{ `₦${format.format(hist.amount.toFixed(2) )}`  }}</td>
-                <td class="text-center">
-                  {{ `₦${format.format(hist.previousBalance.toFixed(2) )}` }}
-                </td>
-                <td class="text-center">
-                  {{ `₦${format.format(hist.newBalance.toFixed(2) )}` }}
-                </td>
-                <td class="text-center">
-                  {{ moment(hist.createdAt).format("Y-M-D h:mm:ss a") }}
-                </td>
-              </tr> -->
+                <td class="text-center">{{ merchant.merchantName }}</td>
+                <td class="text-center">{{ merchant.companyName }}</td>
+                <td class="text-center">{{ merchant.email }}</td>
+                <td class="text-center">{{ merchant.walletId }}</td>
+                <td class="text-center">{{ merchant.phoneNumber }}</td>
+                <td class="text-center">{{ merchant.address }}</td>
+                <td class="text-center">{{ merchant.state }}</td>
+                <td class="text-center">{{ merchant.country }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -151,7 +147,7 @@ export default {
   data() {
     return {
       error: false,
-      history: [],
+      merchants: [],
       errorMsg: "",
       loading: false,
       moment,
@@ -171,73 +167,73 @@ export default {
   },
   methods: {
     async refresh(mode) {
-    //   try {
-    //     this.loading = true;
-    //     let payload = { page: this.page };
-    //     switch (mode) {
-    //       case "next":
-    //         payload = { page: this.nextPage };
-    //         break;
-    //       case "previous":
-    //         payload = { page: this.prevPage };
-    //         break;
-    //     }
-    //     const res = await axios.post(
-    //       `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-    //       payload
-    //     );
-    //     const {
-    //       docs,
-    //       hasNextPage,
-    //       hasPrevPage,
-    //       totalPages,
-    //       prevPage,
-    //       nextPage,
-    //     } = res.data.history;
-    //     this.history = docs;
-    //     this.hasPrevPage = hasPrevPage;
-    //     this.hasNextPage = hasNextPage;
-    //     this.totalPages = totalPages;
-    //     this.prevPage = prevPage;
-    //     this.nextPage = nextPage;
-    //   } catch (err) {
-    //     console.log(err);
-    //     this.error = true;
-    //     this.errorMsg = "Unable to Fetch History";
-    //   }
-    //   this.loading = false;
+      try {
+        this.loading = true;
+        let payload = { page: this.page };
+        switch (mode) {
+          case "next":
+            payload = { page: this.nextPage };
+            break;
+          case "previous":
+            payload = { page: this.prevPage };
+            break;
+        }
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
+          payload
+        );
+        const {
+          docs,
+          hasNextPage,
+          hasPrevPage,
+          totalPages,
+          prevPage,
+          nextPage,
+        } = res.data.merchants;
+        this.merchants = docs;
+        this.hasPrevPage = hasPrevPage;
+        this.hasNextPage = hasNextPage;
+        this.totalPages = totalPages;
+        this.prevPage = prevPage;
+        this.nextPage = nextPage;
+      } catch (err) {
+        console.log(err);
+        this.error = true;
+        this.errorMsg = "Unable to Fetch Merchants";
+      }
+      this.loading = false;
     },
   },
   async mounted() {
-    // try {
-    //   this.loading = true;
-    //   const res = await axios.post(
-    //     `${process.env.VUE_APP_API_URL}/transactions/wallet-reports`,
-    //     {
-    //       page: this.page,
-    //     }
-    //   );
-    //   const {
-    //     docs,
-    //     hasNextPage,
-    //     hasPrevPage,
-    //     totalPages,
-    //     prevPage,
-    //     nextPage,
-    //   } = res.data.history;
-    //   this.history = docs;
-    //   this.hasPrevPage = hasPrevPage;
-    //   this.hasNextPage = hasNextPage;
-    //   this.totalPages = totalPages;
-    //   this.prevPage = prevPage;
-    //   this.nextPage = nextPage;
+    try {
+      this.loading = true;
+      const res = await axios.post(
+        `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
+        {
+          page: this.page,
+        }
+      );
+      const {
+        docs,
+        hasNextPage,
+        hasPrevPage,
+        totalPages,
+        prevPage,
+        nextPage,
+      } = res.data.merchants;
+      this.merchants = docs;
+      this.hasPrevPage = hasPrevPage;
+      this.hasNextPage = hasNextPage;
+      this.totalPages = totalPages;
+      this.prevPage = prevPage;
+      this.nextPage = nextPage;
     
-    // } catch (err) {
-    //   console.log(err);
-    //   this.error = true;
-    //   this.errorMsg = "Unable to Fetch History";
-    // }
-    // this.loading = false;
+    } catch (err) {
+      console.log(err);
+      this.error = true;
+      this.errorMsg = "Unable to Fetch Merchants";
+    }
+    this.loading = false;
   },
 };
 </script>

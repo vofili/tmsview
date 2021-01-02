@@ -11,27 +11,6 @@
         <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
 
         <sidebar-link
-          to="/dashboard/terminals"
-          name="View Terminals"
-          icon="ti-control-stop"
-          v-if="auth.user.userType === 'super-admin'"
-        />
-        
-        <sidebar-link
-          to="/dashboard/add-terminal"
-          name="Add Terminal"
-          icon="ti-control-stop"
-          v-if="auth.user.userType === 'super-admin'"
-        />
-
-        <sidebar-link
-          to="/dashboard/wallet-reports"
-          name="Wallet Reports"
-          icon="ti-wallet"
-          v-if="auth.user.userType === 'super-admin'"
-        />
-
-        <sidebar-link
           to="/dashboard/create-user"
           name="Create User"
           icon="ti-plus"
@@ -46,7 +25,28 @@
         <sidebar-link
           to="/dashboard/merchants"
           name="View Merchants"
-          icon="ti-medall"
+          icon="ti-layout"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+        
+        <sidebar-link
+          to="/dashboard/add-terminal"
+          name="Add Terminal"
+          icon="ti-control-stop"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
+          to="/dashboard/terminals"
+          name="View Terminals"
+          icon="ti-desktop"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
+          to="/dashboard/wallet-reports"
+          name="Wallet Reports"
+          icon="ti-wallet"
           v-if="auth.user.userType === 'super-admin'"
         />
         
@@ -72,11 +72,11 @@
           name="Notifications"
           icon="ti-bell"
         /> -->
-        <sidebar-link
+        <!-- <sidebar-link
           to="/dashboard/icons"
           name="Icons"
           icon="ti-pencil-alt2"
-        />
+        /> -->
       </template>
       <mobile-menu>
         
