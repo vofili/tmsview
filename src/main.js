@@ -17,11 +17,13 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router/index";
 import store from './store'
+import VueSimpleAlert from "vue-simple-alert";
 
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
 
 Vue.use(PaperDashboard);
+Vue.use(VueSimpleAlert);
 
 /* eslint-disable no-new */
 new Vue({

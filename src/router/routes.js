@@ -18,6 +18,9 @@ import WalletReports from "@/pages/WalletReports.vue";
 import AddMerchant from "@/pages/AddMerchant.vue"
 import Merchants from "@/pages/Merchant.vue"
 import Terminals from "@/pages/Terminals.vue"
+import EditMerchant from "@/pages/EditMerchant.vue"
+import MerchantAgents from "@/pages/Agents.vue"
+import CreateAgent from "@/pages/AddAgent.vue"
 
 const routes = [
   {
@@ -81,6 +84,20 @@ const routes = [
         component: Merchants
       },
       {
+        path: "merchant/:id",
+        name: "edit-merchant",
+        component: EditMerchant
+      },
+      {
+        path: "merchant/:merchantId/agents",
+        name: "merchant-agents",
+        component: MerchantAgents
+      },
+      {
+        path: "merchant/:merchantId/create-agent",
+        name: "merchant-agents",
+        component: CreateAgent
+      },      {
         path: "terminals",
         name: "terminals",
         component: Terminals

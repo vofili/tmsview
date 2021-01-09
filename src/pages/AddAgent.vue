@@ -1,48 +1,71 @@
 <template>
-  <card class="card" title="Add Merchant">
+  <card class="card" title="Add Merchant's Agent">
     <div>
       <form @submit.prevent>
         <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-6" v-if="auth.merchant !== null">
             <fg-input type="text"
                         label="Merchant Name"
                       placeholder="Merchant Name"
-                      v-model="merchant.merchantName">
+                      :disabled="true"
+                      v-model="auth.merchant.merchantName">
             </fg-input>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-6" v-if="auth.merchant !== null">
 
             <fg-input type="text"
-                      label="Company Name"
+                      label="Merchant Company Name"
                       placeholder="Company Name"
-                      v-model="merchant.companyName">
+                      :disabled="true"
+                      v-model="auth.merchant.companyName">
+            </fg-input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <fg-input type="text"
+                      label="First Name"
+                      placeholder="First Name"
+                      v-model="agent.firstName">
+            </fg-input>
+          </div>
+           <div class="col-md-4">
+            <fg-input type="text"
+                      label="Last Name"
+                      placeholder="Last Name"
+                      v-model="agent.lastName">
             </fg-input>
           </div>
           <div class="col-md-4">
             <fg-input type="text"
                       label="Email"
                       placeholder="Email"
-                      v-model="merchant.email">
+                      v-model="agent.email">
             </fg-input>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-12">
+        <div class="row">            
+          <div class="col-md-4">
+            <fg-input type="text"
+                      label="Business Name"
+                      placeholder="Business Name"
+                      v-model="agent.businessName">
+            </fg-input>
+          </div>
+          <div class="col-md-4">
             <fg-input type="text"
                       label="Address"
                       placeholder="Address"
-                      v-model="merchant.address">
+                      v-model="agent.address">
             </fg-input>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-4">
             <fg-input type="text"
                       label="Phone Number"
                       placeholder="Phone Number"
-                      v-model="merchant.phoneNumber">
+                      v-model="agent.phoneNumber">
             </fg-input>
           </div>
         </div>
@@ -53,7 +76,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.country"
+              v-model="agent.country"
               required
               @change="getStates()"
             >
@@ -69,7 +92,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.state"
+              v-model="agent.state"
               required
               @change="fetchLgas()"
             >
@@ -85,7 +108,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.localGovernment"
+              v-model="agent.localGovernment"
               required
             >
               <option value="">Select Local Government</option>
@@ -107,7 +130,7 @@
                   role="status"
                   v-if="loading.show === true"
                 ></div>
-            Add Merchant
+            Add Agent
           </p-button>
         </div>
         <div class="clearfix"></div>
@@ -120,13 +143,14 @@ import { mapState, mapActions } from "vuex"
 export default {
   data() {
     return {
-      merchant: {
-        merchantName: "",
-        companyName: "",
+      agent: {
+        businessName: "",
         email: "",
         address: "",
         phoneNumber: "",
         country: "",
+        lastName: "",
+        firstName: "",
         state: "",
         localGovernment: ""
       }
@@ -136,17 +160,22 @@ export default {
     ...mapState(["auth", "loading", "utils"]),
   },
   methods: {
-    ...mapActions(["createMerchant", "getStates", "getLgas", "getCountries"]),
+    ...mapActions(["getStates", "getLgas", "getCountries", "getMerchant", "createMerchantAgent"]),
     submit() {
-      this.createMerchant(this.merchant)
+        const data = {
+            ...this.agent,
+            merchantId: this.auth.merchant._id
+        }
+      this.createMerchantAgent(data)
     },
     fetchLgas() {
-      this.merchant.lga = "";
-      this.getLgas(this.merchant.state);
+      this.agent.lga = "";
+      this.getLgas(this.agent.state);
     },
   },
   mounted(){
     this.getCountries();
+    this.getMerchant(this.$route.params.merchantId )
   }
 };
 </script>

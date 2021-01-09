@@ -35,51 +35,60 @@
               <template slot="singleLabel" slot-scope="{ option }"> {{ option.merchantName }} </template>
             </multiselect>
           </div>
-          <div class="col-md-6">
-            <fg-input type="text"
-                      label="Agent Location"
-                      placeholder="Agent Location"
-                      v-model="terminal.agentLocation">
-            </fg-input>
-          </div>
-        </div>
-
-        <!-- <div class="row">
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="City"
-                      placeholder="City"
-                      v-model="terminal.city">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="Country"
-                      placeholder="Country"
-                      v-model="terminal.country">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="number"
-                      label="Postal Code"
-                      placeholder="ZIP Code"
-                      v-model="terminal.postalCode">
-            </fg-input>
-          </div>
         </div>
 
         <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <label>About Me</label>
-              <textarea rows="5" class="form-control border-input"
-                        placeholder="Here can be your description"
-                        v-model="terminal.aboutMe">
-
-              </textarea>
-            </div>
+           <div class="col-md-4">
+              <label>Country</label>
+            <select
+              class="form-control op-border"
+              id="rate-type"
+              v-model="terminal.country"
+              required
+              @change="getStates()"
+            >
+              <option value="">country</option>
+              <option v-for="(ct, index) in utils.countries" :key="index" :value="ct.code">
+                {{ ct.name }}
+              </option>
+            </select>
           </div>
-        </div> -->
+
+          <div class="col-md-4">
+            <label>State</label>
+            <select
+              class="form-control op-border"
+              id="rate-type"
+              v-model="terminal.state"
+              required
+              @change="fetchLgas()"
+            >
+              <option value="">State</option>
+              <option v-for="st in utils.allStates" :key="st" :value="st">
+                {{ st }}
+              </option>
+            </select>
+          </div>
+         
+          <div class="col-md-4">
+            <label>Local Government</label>
+            <select
+              class="form-control op-border"
+              id="rate-type"
+              v-model="terminal.localGovernment"
+              required
+            >
+              <option value="">Select Local Government</option>
+              <option v-for="lg in utils.lgas" :key="lg.id" :value="lg.name">
+                {{ lg.name }}
+              </option>
+            </select>
+            <span v-if="utils.lgaLoading">
+              Fetching Lga's
+            </span>
+          </div>
+        </div>
+        
         <div class="text-center">
           <p-button type="info" round
                     @click.native.prevent="submit">
@@ -110,7 +119,9 @@ export default {
           serialNo: "",
           merchantId: "",
           agentId: "",
-          agentLocation: ""
+          country: "",
+          state: "",
+          localGovernment: ""
       },
       selectedMerchant: "",
     };
@@ -119,7 +130,7 @@ export default {
     ...mapState(["auth", "loading", "utils"]),
   },
   methods: {
-    ...mapActions(["createTerminal", "getMerchants"]),
+    ...mapActions(["createTerminal", "getMerchants", "getStates", "getLgas", "getCountries"]),
     submit() {
       if(this.selectedMerchant !== ""){
         this.terminal.agentId = this.selectedMerchant._id
@@ -128,10 +139,15 @@ export default {
     },
     optionLabel ({ merchantName, state, country }) {
       return `${merchantName}, ${state}, ${country}`
-    }
+    }, 
+    fetchLgas() {
+      this.merchant.lga = "";
+      this.getLgas(this.merchant.state);
+    },
   },
   mounted(){
-    this.getMerchants()
+    this.getMerchants();
+    this.getCountries();
   }
 };
 </script>

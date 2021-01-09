@@ -15,7 +15,7 @@
         <ul class="navbar-nav ml-auto">
          
           <drop-down class="nav-item"
-                     :title="auth.user.email"
+                     :title="auth.user.firstName"
                      title-classes="nav-link"
                      icon="ti-user">
             <div class="dropdown-item" @click="logout" href="#">Logout</div>

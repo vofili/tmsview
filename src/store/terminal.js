@@ -21,8 +21,13 @@ export default {
 
         })
         .catch((err) => {
-          const { message } = err.response.data;
+          const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
           commit("setLoading", false);
         });     
     },

@@ -10,6 +10,7 @@ export default {
   state: {
     user: null,
     loading: false,
+    merchant: {}
   },
   actions: {
     login({ commit }, data) {
@@ -67,8 +68,111 @@ export default {
           router.push("/dashboard/merchants");
         })
         .catch((err) => {
-          const { message } = err.response.data;
+          const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    editMerchant({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .put(`${url}/auth/update-merchant`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    disableMerchant({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/disable-merchant`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    enableMerchant({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/enable-merchant`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    getMerchant({ commit }, id) {
+      commit("setLoading", true);
+      commit("setMerchant", {})
+      axios
+        .get(`${url}/merchant/${id}`)
+        .then((res) => {
+          commit("setMerchant", res.data.merchant)
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    createMerchantAgent({ commit }, payload) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/merchant/agents/create`, payload)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+
+          router.push(`/dashboard/merchant/${payload.merchantId}/agents`);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
           commit("setLoading", false);
         });
     },
@@ -85,5 +189,8 @@ export default {
     clearUser(state) {
       state.user = null;
     },
+    setMerchant(state, payload){
+      state.merchant = payload
+    }
   },
 };

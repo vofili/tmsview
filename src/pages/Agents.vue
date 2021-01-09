@@ -1,13 +1,21 @@
 <template>
   <div class="row transaction">
-    <div  class="spinner-grow" role="status" v-if="loading === true"></div>
+    <div class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
+    <div class="col-12" v-if="auth.merchant !== null">
+      <p>Merchant Name: {{ auth.merchant.merchantName }}</p>
+    </div>
     <!-- <h4>Transactions</h4> -->
     <div class="p-4 col-12">
-      <button class="btn btn-info m-2" @click="refresh('refresh')">Refresh</button>
-      <router-link class="btn btn-info m-2" to="/dashboard/create-merchant"> Add Merchant</router-link>
+      <!-- <button class="btn btn-info m-2" @click="refresh('refresh')">Refresh</button> -->
+      <router-link
+        class="btn btn-info m-2"
+        :to="`/dashboard/merchant/${$route.params.merchantId}/create-agent`"
+      >
+        Add Agents To Merchant</router-link
+      >
     </div>
 
     <div class="col-12">
@@ -17,10 +25,11 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
-                <th scope="col" class="text-center">Merchant Name</th>
-                <th scope="col" class="text-center">Company Name</th>
+                <th scope="col" class="text-center">First Name</th>
+                <th scope="col" class="text-center">Last Name</th>
                 <th scope="col" class="text-center">Email</th>
-                <th scope="col" class="text-center">Wallet Id</th>
+                <th scope="col" class="text-center">Agent Id / Wallet Id</th>
+                <th scope="col" class="text-center">Business Name</th>
                 <th scope="col" class="text-center">Phone Number</th>
                 <th scope="col" class="text-center">Address</th>
                 <th scope="col" class="text-center">State</th>
@@ -29,28 +38,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(merchant, index) in merchants"
-                :key="merchant._id"
-              >
+              <tr v-for="(agent, index) in agents" :key="agent._id">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ merchant.merchantName }}</td>
-                <td class="text-center">{{ merchant.companyName }}</td>
-                <td class="text-center">{{ merchant.email }}</td>
-                <td class="text-center">{{ merchant.walletId }}</td>
-                <td class="text-center">{{ merchant.phoneNumber }}</td>
-                <td class="text-center">{{ merchant.address }}</td>
-                <td class="text-center">{{ merchant.state }}</td>
-                <td class="text-center">{{ merchant.country }}</td>
+                <td class="text-center">{{ agent.firstName }}</td>
+                <td class="text-center">{{ agent.lastName }}</td>
+                <td class="text-center">{{ agent.email }}</td>
+                <td class="text-center">{{ agent.agentId }}</td>
+                <td class="text-center">{{ agent.businessName }}</td>
+                <td class="text-center">{{ agent.phoneNumber }}</td>
+                <td class="text-center">{{ agent.address }}</td>
+                <td class="text-center">{{ agent.state }}</td>
+                <td class="text-center">{{ agent.country }}</td>
                 <td class="text-center">
-                  <drop-down class="nav-item" title="Options" id="list">
-                    <div class="p-2">                        
-                        <router-link :to="`/dashboard/merchant/${merchant._id}`"> View Merchant </router-link>
-                    </div>
-                    <div class="p-2">
-                        <router-link :to="`/dashboard/merchant/${merchant._id}/agents`"> View Agents </router-link>
-                    </div>
-                  </drop-down>
+                  <router-link :to="`/dashboard/agent/${agent._id}`">
+                    View Agent
+                  </router-link>
                 </td>
               </tr>
             </tbody>
@@ -84,21 +86,21 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   components: {},
   data() {
     return {
       error: false,
-      merchants: [],
+      agents: [],
       errorMsg: "",
-      loading: false,
       moment,
       format: new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
       page: 1,
-      totalDocs: 37,
+      //   totalDocs: 37,
       limit: 20,
       totalPages: 0,
       hasPrevPage: false,
@@ -107,7 +109,11 @@ export default {
       nextPage: null,
     };
   },
+  computed: {
+    ...mapState(["loading", "auth"]),
+  },
   methods: {
+    ...mapActions(["getMerchant"]),
     async refresh(mode) {
       try {
         this.loading = true;
@@ -121,8 +127,8 @@ export default {
             break;
         }
         const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
-          payload
+          `${process.env.VUE_APP_API_URL}/merchant/get-agents`,
+          { ...payload, merchantId: this.$route.params.merchantId, }
         );
         const {
           docs,
@@ -131,8 +137,8 @@ export default {
           totalPages,
           prevPage,
           nextPage,
-        } = res.data.merchants;
-        this.merchants = docs;
+        } = res.data.agents;
+        this.agents = docs;
         this.hasPrevPage = hasPrevPage;
         this.hasNextPage = hasNextPage;
         this.totalPages = totalPages;
@@ -141,18 +147,20 @@ export default {
       } catch (err) {
         console.log(err);
         this.error = true;
-        this.errorMsg = "Unable to Fetch Merchants";
+        this.errorMsg = "Unable to Fetch Agent";
       }
       this.loading = false;
     },
   },
   async mounted() {
+    this.getMerchant(this.$route.params.merchantId);
     try {
       this.loading = true;
       const res = await axios.post(
-        `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
+        `${process.env.VUE_APP_API_URL}/merchant/get-agents`,
         {
           page: this.page,
+          merchantId: this.$route.params.merchantId,
         }
       );
       const {
@@ -162,18 +170,17 @@ export default {
         totalPages,
         prevPage,
         nextPage,
-      } = res.data.merchants;
-      this.merchants = docs;
+      } = res.data.agents;
+      this.agents = docs;
       this.hasPrevPage = hasPrevPage;
       this.hasNextPage = hasNextPage;
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
-    
     } catch (err) {
       console.log(err);
       this.error = true;
-      this.errorMsg = "Unable to Fetch Merchants";
+      this.errorMsg = "Unable to Fetch Agents";
     }
     this.loading = false;
   },
@@ -188,8 +195,5 @@ th {
 }
 .spinner-grow {
   position: fixed;
-}
-#list {
-    list-style-type: none;
 }
 </style>
