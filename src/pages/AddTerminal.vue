@@ -31,8 +31,15 @@
           
           <div class="col-md-6">
             <label>Merchant Name</label>
-            <multiselect v-model="selectedMerchant" :custom-label="optionLabel" track-by="_id" :options="utils.merchants" :allow-empty="false" placeholder="Select a Merchant">
+            <multiselect v-model="selectedMerchant" :custom-label="optionLabel" track-by="_id" :options="utils.merchants" :allow-empty="false" placeholder="Select a Merchant" @close="getAgents">
               <template slot="singleLabel" slot-scope="{ option }"> {{ option.merchantName }} </template>
+            </multiselect>
+          </div>
+
+          <div class="col-md-6">
+            <label>Agent Name</label>
+            <multiselect v-model="selectedAgent" :custom-label="optionLabel2" track-by="_id" :options="auth.agents" :allow-empty="false" placeholder="Select an Agent" >
+              <template slot="singleLabel" slot-scope="{ option }"> {{ option.firstName }} </template>
             </multiselect>
           </div>
         </div>
@@ -124,26 +131,37 @@ export default {
           localGovernment: ""
       },
       selectedMerchant: "",
+      selectedAgent: ""
     };
   },
   computed: {
     ...mapState(["auth", "loading", "utils"]),
   },
   methods: {
-    ...mapActions(["createTerminal", "getMerchants", "getStates", "getLgas", "getCountries"]),
+    ...mapActions(["createTerminal", "getMerchants", "getStates", "getLgas", "getCountries", "getAllMerchantAgents"]),
     submit() {
       if(this.selectedMerchant !== ""){
-        this.terminal.agentId = this.selectedMerchant._id
+        this.terminal.tmsMerchantId = this.selectedMerchant._id
+      }
+      if(this.selectedAgent !== ""){
+        this.terminal.tmsAgentId = this.selectedAgent._id
       }
       this.createTerminal(this.terminal)
     },
     optionLabel ({ merchantName, state, country }) {
       return `${merchantName}, ${state}, ${country}`
     }, 
+    optionLabel2 ({ firstName, lastName, agentId }) {
+      return `${firstName}, ${lastName}, ${agentId}`
+    }, 
     fetchLgas() {
-      this.merchant.lga = "";
-      this.getLgas(this.merchant.state);
+      this.terminal.lga = "";
+      this.getLgas(this.terminal.state);
     },
+    getAgents(){
+      // console.log(this.selectedMerchant)
+      this.getAllMerchantAgents({ merchantId: this.selectedMerchant._id})
+    }
   },
   mounted(){
     this.getMerchants();

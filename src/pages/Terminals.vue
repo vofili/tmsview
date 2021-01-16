@@ -1,5 +1,8 @@
 <template>
   <div class="row transaction">
+    <div>
+      <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
+    </div>
     <!-- <div class="col-12 d-flex align-items-center">
       <form>
         <div class="form-row align-items-center">
@@ -91,6 +94,8 @@
                 <!-- <th scope="col" class="text-center">Current Version</th> -->
                 <th scope="col" class="text-center">Merchant Id</th>
                 <th scope="col" class="text-center">Merchant Name</th>
+                <th scope="col" class="text-center">Agent Id</th>
+                <th scope="col" class="text-center">Agent Name</th>
               </tr>
             </thead>
             <tbody>
@@ -103,7 +108,9 @@
                 <td class="text-center">{{ terminal.serialNo }}</td>
                 <!-- <td class="text-center">{{ terminal.currentVersion }}</td> -->
                 <td class="text-center">{{ terminal.merchantId }}</td>
-                <td class="text-center">{{ getMerchantName(terminal.agentId) }}</td>
+                <td class="text-center">{{ terminal.tmsMerchantName || "" }}</td>
+                <td class="text-center">{{ terminal.agentId || "" }}</td>
+                <td class="text-center">{{ terminal.agentName || "" }}</td>
               </tr>
             </tbody>
           </table>

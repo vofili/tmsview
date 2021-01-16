@@ -7,7 +7,6 @@
     <!-- <h4>Transactions</h4> -->
     <div class="p-4 col-12">
       <button class="btn btn-info m-2" @click="refresh('refresh')">Refresh</button>
-      <router-link class="btn btn-info m-2" to="/dashboard/create-merchant"> Add Merchant</router-link>
     </div>
 
     <div class="col-12">

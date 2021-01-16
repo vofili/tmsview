@@ -10,7 +10,8 @@ export default {
   state: {
     user: null,
     loading: false,
-    merchant: {}
+    merchant: {},
+    agents: []
   },
   actions: {
     login({ commit }, data) {
@@ -176,6 +177,78 @@ export default {
           commit("setLoading", false);
         });
     },
+    updateAgent({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .put(`${url}/agent/update`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    disableAgent({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/agent/disable`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    enableAgent({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/agent/enable`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    getAllMerchantAgents({ commit }, payload) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/merchant/get-all-agents`, payload)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setAllMerchantsAgents", res.data)
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          commit("setLoading", false);
+        });
+    },
     logout({ commit }) {
       commit("clearUser");
       localStorage.removeItem("jwtToken");
@@ -191,6 +264,9 @@ export default {
     },
     setMerchant(state, payload){
       state.merchant = payload
+    },
+    setAllMerchantsAgents(state, payload){
+      state.agents = payload.agents
     }
   },
 };

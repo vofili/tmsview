@@ -29,16 +29,16 @@
           v-if="auth.user.userType === 'super-admin'"
         />
         
-        <sidebar-link
+        <!-- <sidebar-link
           to="/dashboard/add-terminal"
           name="Add Terminal"
           icon="ti-control-stop"
           v-if="auth.user.userType === 'super-admin'"
-        />
+        /> -->
 
         <sidebar-link
           to="/dashboard/terminals"
-          name="View Terminals"
+          name="Terminals"
           icon="ti-desktop"
           v-if="auth.user.userType === 'super-admin'"
         />

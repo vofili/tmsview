@@ -21,6 +21,7 @@ import Terminals from "@/pages/Terminals.vue"
 import EditMerchant from "@/pages/EditMerchant.vue"
 import MerchantAgents from "@/pages/Agents.vue"
 import CreateAgent from "@/pages/AddAgent.vue"
+import ViewAgent from "@/pages/ViewAgent"
 
 const routes = [
   {
@@ -87,6 +88,11 @@ const routes = [
         path: "merchant/:id",
         name: "edit-merchant",
         component: EditMerchant
+      },
+      {
+        path: "agent/:agentId",
+        name: "View-Agent",
+        component: ViewAgent
       },
       {
         path: "merchant/:merchantId/agents",
