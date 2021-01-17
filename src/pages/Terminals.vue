@@ -2,19 +2,10 @@
   <div class="row transaction">
     <div>
       <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
+       <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
     </div>
-    <!-- <div class="col-12 d-flex align-items-center">
-      <form>
+    <div class="col-12 d-flex align-items-center">
         <div class="form-row align-items-center">
-          <div class="col-auto">
-            <label for="inlineFormInput">Status</label>
-            <select class="form-control">
-              <option value="">Select Status</option>
-              <option value="successful">Successful</option>
-              <option value="failed">Failed</option>
-              <option value="pending">Pending</option>
-            </select>
-          </div>
           <div class="col-auto mt-2">
             <label>Terminal Id</label>
             <div class="input-group mb-2">
@@ -23,40 +14,44 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Terminal Id"
+                v-model="terminalId"
               />
             </div>
           </div>
           <div class="col-auto mt-2">
-            <label>Stan</label>
+            <label>Serial Number</label>
             <div class="input-group mb-2">
               <input
                 type="text"
                 class="form-control"
                 id="inlineFormInputGroup"
-                placeholder="Stan"
+                placeholder="Serial Number"
+                v-model="serialNo"
               />
             </div>
           </div>
           <div class="col-auto mt-2">
-            <label>Start Date</label>
+            <label>Merchant Id</label>
             <div class="input-group mb-2">
               <input
-                type="date"
+                type="text"
                 class="form-control"
                 id="inlineFormInputGroup"
-                placeholder="Start Date"
+                placeholder="Merchant Id"
+                v-model="merchantId"
               />
             </div>
           </div>
 
           <div class="col-auto mt-2">
-            <label>End Date</label>
+            <label>Agent Id</label>
             <div class="input-group mb-2">
               <input
-                type="date"
+                type="text"
                 class="form-control"
                 id="inlineFormInputGroup"
-                placeholder="End Date"
+                placeholder="Agent Id"
+                v-model="agentId"
               />
             </div>
           </div>
@@ -71,16 +66,12 @@
             </button>
           </div>
         </div>
-      </form>
-    </div> -->
+    </div>
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
-    <!-- <h4>Transactions</h4> -->
-    <div class="p-4 col-12">
-      <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
-    </div>
+    
 
     <div class="col-12">
       <card class="card-plain">
@@ -96,6 +87,7 @@
                 <th scope="col" class="text-center">Merchant Name</th>
                 <th scope="col" class="text-center">Agent Id</th>
                 <th scope="col" class="text-center">Agent Name</th>
+                <th scope="col" class="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -111,6 +103,13 @@
                 <td class="text-center">{{ terminal.tmsMerchantName || "" }}</td>
                 <td class="text-center">{{ terminal.agentId || "" }}</td>
                 <td class="text-center">{{ terminal.agentName || "" }}</td>
+                <td class="text-center">
+                  <drop-down class="nav-item" title="Options" id="list">
+                    <div class="p-2">                        
+                        <router-link :to="`/dashboard/view-terminal/${terminal.terminalId}`"> View </router-link>
+                    </div>
+                  </drop-down>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -165,6 +164,10 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      terminalId:"",
+      merchantId: "",
+      serialNo: "",
+      agentId: ""
     };
   },
   computed: {
@@ -175,13 +178,13 @@ export default {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page };
+        let payload = { page: this.page, terminalId: this.terminalId, merchantId: this.merchantId, serialNo: this.serialNo, agentId: this.agentId };
         switch (mode) {
           case "next":
-            payload = { page: this.nextPage };
+            payload = {...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = { page: this.prevPage };
+            payload = {...payload, page: this.prevPage };
             break;
         }
         const res = await axios.post(
@@ -257,5 +260,8 @@ th {
 }
 .spinner-grow {
   position: fixed;
+}
+#list {
+    list-style-type: none;
 }
 </style>

@@ -22,6 +22,7 @@ import EditMerchant from "@/pages/EditMerchant.vue"
 import MerchantAgents from "@/pages/Agents.vue"
 import CreateAgent from "@/pages/AddAgent.vue"
 import ViewAgent from "@/pages/ViewAgent"
+import Terminal from "@/pages/Terminal"
 
 const routes = [
   {
@@ -51,7 +52,7 @@ const routes = [
       },
       {
         path: "add-terminal",
-        name: "add-terminal",
+        name: "Add Terminal",
         component: AddTerminal
       },
       {
@@ -71,12 +72,12 @@ const routes = [
       },
       {
         path: "create-user",
-        name: "crate-user",
+        name: "Create User",
         component: Register
       },
       {
         path: "create-merchant",
-        name: "crate-merchant",
+        name: "Crate Merchant",
         component: AddMerchant
       },
       {
@@ -86,7 +87,7 @@ const routes = [
       },
       {
         path: "merchant/:id",
-        name: "edit-merchant",
+        name: "Edit Merchant",
         component: EditMerchant
       },
       {
@@ -96,17 +97,23 @@ const routes = [
       },
       {
         path: "merchant/:merchantId/agents",
-        name: "merchant-agents",
+        name: "Merchant Agents",
         component: MerchantAgents
       },
       {
         path: "merchant/:merchantId/create-agent",
-        name: "merchant-agents",
+        name: "Merchant Agents",
         component: CreateAgent
-      },      {
+      },      
+      {
         path: "terminals",
         name: "terminals",
         component: Terminals
+      },
+      {
+        path: "view-terminal/:terminalId",
+        name: "Terminal Management",
+        component: Terminal
       },
       {
         path: "icons",

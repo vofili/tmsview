@@ -1,11 +1,10 @@
 <template>
   <div class="row transaction">
     <div class="col-12 d-flex align-items-center">
-      <form>
         <div class="form-row align-items-center">
           <div class="col-auto">
             <label for="inlineFormInput">Status</label>
-            <select class="form-control">
+            <select class="form-control" v-model="status">
               <option value="">Select Status</option>
               <option value="successful">Successful</option>
               <option value="failed">Failed</option>
@@ -20,6 +19,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Terminal Id"
+                v-model="terminalId"
               />
             </div>
           </div>
@@ -31,6 +31,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Stan"
+                v-model="stan"
               />
             </div>
           </div>
@@ -42,6 +43,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Start Date"
+                v-model="startDate"
               />
             </div>
           </div>
@@ -54,6 +56,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="End Date"
+                v-model="endDate"
               />
             </div>
           </div>
@@ -68,7 +71,6 @@
             </button>
           </div>
         </div>
-      </form>
     </div>
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
@@ -132,7 +134,7 @@
                   }}
                 </td>
                 <td class="text-center">
-                  {{ moment(transaction.createdAt).format("Y-M-D h:mm:ss a") }}
+                  {{ moment(transaction.createdAt).format("Y-MM-D h:mm:ss a") }}
                 </td>
               </tr>
             </tbody>
@@ -187,19 +189,26 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      status: "",
+      terminalId: "",
+      stan: "",
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD')
     };
   },
   methods: {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page };
+        let payload = { page: this.page, status: this.status, terminalId: this.terminalId, stan: this.stan,
+          startDate: this.startDate, endDate: this.endDate
+        };
         switch (mode) {
           case "next":
-            payload = { page: this.nextPage };
+            payload = {...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = { page: this.prevPage };
+            payload = {...payload, page: this.prevPage };
             break;
         }
         const res = await axios.post(
@@ -235,6 +244,8 @@ export default {
         `${process.env.VUE_APP_API_URL}/transactions/details`,
         {
           page: this.page,
+          startDate: this.startDate,
+          endDate: this.endDate,
         }
       );
       const {

@@ -1,15 +1,13 @@
 <template>
   <div class="row transaction">
-    <!-- <div class="col-12 d-flex align-items-center">
-      <form>
+    <div class="col-12 d-flex align-items-center">
         <div class="form-row align-items-center">
           <div class="col-auto">
-            <label for="inlineFormInput">Status</label>
-            <select class="form-control">
-              <option value="">Select Status</option>
-              <option value="successful">Successful</option>
-              <option value="failed">Failed</option>
-              <option value="pending">Pending</option>
+            <label for="inlineFormInput">Type</label>
+            <select class="form-control" v-model="type">
+              <option value="">Select Type</option>
+              <option value="credit">Credit</option>
+              <option value="debit">Debit</option>
             </select>
           </div>
           <div class="col-auto mt-2">
@@ -20,20 +18,23 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Terminal Id"
+                v-model="terminalId"
               />
             </div>
           </div>
           <div class="col-auto mt-2">
-            <label>Stan</label>
+            <label>Wallet Id</label>
             <div class="input-group mb-2">
               <input
                 type="text"
                 class="form-control"
                 id="inlineFormInputGroup"
-                placeholder="Stan"
+                placeholder="walletId"
+                v-model="walletId"
               />
             </div>
           </div>
+
           <div class="col-auto mt-2">
             <label>Start Date</label>
             <div class="input-group mb-2">
@@ -42,6 +43,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="Start Date"
+                v-model="startDate"
               />
             </div>
           </div>
@@ -54,6 +56,7 @@
                 class="form-control"
                 id="inlineFormInputGroup"
                 placeholder="End Date"
+                v-model="endDate"
               />
             </div>
           </div>
@@ -68,8 +71,7 @@
             </button>
           </div>
         </div>
-      </form>
-    </div> -->
+    </div>
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
@@ -167,19 +169,26 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      type: "",
+      terminalId: "",
+      walletId: "",
+      startDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD')
     };
   },
   methods: {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page };
+        let payload = { page: this.page, type: this.type, terminalId: this.terminalId, walletId: this.walletId,
+          startDate: this.startDate, endDate: this.endDate
+        };
         switch (mode) {
           case "next":
-            payload = { page: this.nextPage };
+            payload = {...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = { page: this.prevPage };
+            payload = {...payload, page: this.prevPage };
             break;
         }
         const res = await axios.post(
