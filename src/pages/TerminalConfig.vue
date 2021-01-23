@@ -5,37 +5,87 @@
         <div class="row">
           <div class="col-md-5">
             <fg-input type="text"
-                        label="Terminal Id"
-                      placeholder="Terminal Id"
-                      v-model="terminal.terminalId">
+                        label="Tms Base Url"
+                      placeholder="Tms Base Url"
+                      v-model="config.tmsBaseUrl">
             </fg-input>
           </div>
           <div class="col-md-3">
 
             <fg-input type="text"
-                      label="Serial Number"
-                      placeholder="Serial No"
-                      v-model="terminal.serialNo">
+                      label="Nibbs Ip"
+                      placeholder="Nibbs Ip"
+                      v-model="config.nibbsIp">
             </fg-input>
           </div>
           <div class="col-md-4">
             <fg-input type="text"
-                      label="merchant Id"
-                      placeholder="Merchant Id"
-                      v-model="terminal.merchantId">
+                      label="Nibbs Port"
+                      placeholder="Nibbs Port"
+                      v-model="config.nibbsIp">
+            </fg-input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+            <fg-input type="text"
+                        label="Nibbs Env"
+                      placeholder="Nibbs Env"
+                      v-model="config.nibbsEnv">
+            </fg-input>
+          </div>
+          <div class="col-md-3">
+
+            <fg-input type="text"
+                      label="Nibbs Key"
+                      placeholder="Nibbs Key"
+                      v-model="config.nibbsKey">
+            </fg-input>
+          </div>
+          <div class="col-md-4">
+            <fg-input type="text"
+                      label="POS Data Code"
+                      placeholder="POS Data Code"
+                      v-model="config.posDataCode">
+            </fg-input>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+            <fg-input type="number"
+                        label="Contactless Cvm Limit"
+                      placeholder="Contactless Cvm Limit"
+                      v-model="config.contactlessCvmLimit">
+            </fg-input>
+          </div>
+          <div class="col-md-3">
+
+            <fg-input type="text"
+                      label="Contactless Trans Limit"
+                      placeholder="Contactless Trans Limit"
+                      v-model="config.contactlessTransLimit">
+            </fg-input>
+          </div>
+          <div class="col-md-4">
+            <fg-input type="text"
+                      label="POS Data Code"
+                      placeholder="POS Data Code"
+                      v-model="config.posDataCode">
             </fg-input>
           </div>
         </div>
 
         <div class="text-center">
-          <p-button type="info" round
+          <!-- <p-button type="info" round
                     @click.native.prevent="submit">
             <div
                   class="spinner-grow"
                   role="status"
                   v-if="loading.show === true"
                 ></div> Save Configuration
-          </p-button>
+          </p-button> -->
         </div>
         <div class="clearfix"></div>
       </form>
@@ -51,17 +101,8 @@ export default {
   },
   data() {
     return {
-      terminal: {
-          terminalId: "",
-          serialNo: "",
-          merchantId: "",
-          agentId: "",
-          country: "",
-          state: "",
-          localGovernment: ""
+      config: {
       },
-      selectedMerchant: "",
-      selectedAgent: ""
     };
   },
   computed: {
@@ -70,32 +111,20 @@ export default {
   methods: {
     ...mapActions(["createTerminal", "getMerchants", "getStates", "getLgas", "getCountries", "getAllMerchantAgents"]),
     submit() {
-      if(this.selectedMerchant !== ""){
-        this.terminal.tmsMerchantId = this.selectedMerchant._id
-      }
-      if(this.selectedAgent !== ""){
-        this.terminal.tmsAgentId = this.selectedAgent._id
-      }
-      this.saveConfig(this.terminal)
+      this.saveConfig(this.config)
     },
-    optionLabel ({ merchantName, state, country }) {
-      return `${merchantName}, ${state}, ${country}`
-    }, 
-    optionLabel2 ({ firstName, lastName, agentId }) {
-      return `${firstName}, ${lastName}, ${agentId}`
-    }, 
-    fetchLgas() {
-      this.terminal.lga = "";
-      this.getLgas(this.terminal.state);
-    },
-    getAgents(){
-      // console.log(this.selectedMerchant)
-      this.getAllMerchantAgents({ merchantId: this.selectedMerchant._id})
-    }
+    // optionLabel ({ merchantName, state, country }) {
+    //   return `${merchantName}, ${state}, ${country}`
+    // }, 
+    // optionLabel2 ({ firstName, lastName, agentId }) {
+    //   return `${firstName}, ${lastName}, ${agentId}`
+    // }, 
+    // fetchLgas() {
+    //   this.config.lga = "";
+    //   this.getLgas(this.config.state);
+    // }
   },
   mounted(){
-    this.getMerchants();
-    this.getCountries();
   }
 };
 </script>
