@@ -8,6 +8,7 @@ export default {
     lgas: [],
     countries: [],
     merchants: [],
+    institutions: [],
     stateLoading: false,
     lgaLoading: false,
   },
@@ -67,6 +68,20 @@ export default {
             commit("setNotification", { type: "danger", message: `Unable to Fetch Merchants` });
             commit("setLoading", false);
           });
+      },
+      getInstitutions({ commit }) {
+        commit("setLoading", true);
+        axios
+          .get(`${url}/institutions`)
+          .then((res) => {
+            const { data } = res;
+            commit("setLoading", false);
+            commit("setInstitutions", data);
+          })
+          .catch((err) => {
+            commit("setNotification", { type: "danger", message: `Unable to Fetch Institutions` });
+            commit("setLoading", false);
+          });
       }
   },
   mutations: {
@@ -87,6 +102,9 @@ export default {
     },
     setMerchants(state, payload){
         state.merchants = payload.merchants
-    }
+    },
+    setInstitutions(state, payload){
+      state.institutions = payload.institutions
+  }
   },
 };

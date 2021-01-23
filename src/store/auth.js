@@ -249,6 +249,104 @@ export default {
           commit("setLoading", false);
         });
     },
+    createInstitution({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/create-institution`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+
+          router.push("/dashboard/institutions");
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    editInstitution({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .put(`${url}/auth/update-institution`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    disableInstitution({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/disable-institution`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    enableInstitution({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/auth/enable-institution`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    getInstitution({ commit }, id) {
+      commit("setLoading", true);
+      commit("setMerchant", {})
+      axios
+        .get(`${url}/institution/${id}`)
+        .then((res) => {
+          commit("setMerchant", res.data.merchant)
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
     logout({ commit }) {
       commit("clearUser");
       localStorage.removeItem("jwtToken");

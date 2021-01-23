@@ -44,10 +44,16 @@
         />
 
         <sidebar-link
+          to="/dashboard/institutions"
+          name="Institutions"
+          icon="ti-crown"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
           to="/dashboard/wallet-reports"
           name="Wallet Reports"
           icon="ti-wallet"
-          v-if="auth.user.userType === 'super-admin'"
         />
         
         <!-- <sidebar-link

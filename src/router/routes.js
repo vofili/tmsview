@@ -23,6 +23,11 @@ import MerchantAgents from "@/pages/Agents.vue"
 import CreateAgent from "@/pages/AddAgent.vue"
 import ViewAgent from "@/pages/ViewAgent"
 import Terminal from "@/pages/Terminal"
+import UploadTerminal from "@/pages/UploadTerminal"
+import AddInstitution from "@/pages/AddInstitution.vue"
+import Institutions from "@/pages/Institutions.vue"
+import EditInstitution from "@/pages/EditInstitution.vue"
+import TerminalConfig from "@/pages/TerminalConfig"
 
 const routes = [
   {
@@ -54,6 +59,11 @@ const routes = [
         path: "add-terminal",
         name: "Add Terminal",
         component: AddTerminal
+      },
+      {
+        path: "upload-terminal",
+        name: "Upload Terminals",
+        component: UploadTerminal
       },
       {
         path: "transactions",
@@ -91,6 +101,21 @@ const routes = [
         component: EditMerchant
       },
       {
+        path: "create-institution",
+        name: "Crate Institution",
+        component: AddInstitution
+      },
+      {
+        path: "institutions",
+        name: "institutions",
+        component: Institutions
+      },
+      {
+        path: "institution/:id",
+        name: "Edit Institution",
+        component: EditInstitution
+      },
+      {
         path: "agent/:agentId",
         name: "View-Agent",
         component: ViewAgent
@@ -114,6 +139,11 @@ const routes = [
         path: "view-terminal/:terminalId",
         name: "Terminal Management",
         component: Terminal
+      },
+      {
+        path: "terminal-configuration",
+        name: "Terminal Configuration",
+        component: TerminalConfig
       },
       {
         path: "icons",

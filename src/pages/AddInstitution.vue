@@ -1,56 +1,58 @@
 <template>
-  <card class="card" title="Add Merchant">
+  <card class="card" title="Add Institution">
     <div>
       <form @submit.prevent>
         <div class="row">
-          <div class="col-md-4">
-            <label>Select an Institution</label>
-            <multiselect v-model="selectedInstitution" :custom-label="optionLabel" track-by="_id" :options="utils.institutions" :allow-empty="false" placeholder="Select an Institution">
-              <template slot="singleLabel" slot-scope="{ option }"> {{ option.institutionName }} </template>
-            </multiselect>
-          </div>
-
-          <div class="col-md-4">
+          <div class="col-md-5">
             <fg-input type="text"
-                        label="Merchant Name"
-                      placeholder="Merchant Name"
-                      v-model="merchant.merchantName">
+                        label="Institution Name"
+                      placeholder="Institution Name"
+                      v-model="institution.institutionName">
             </fg-input>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
 
             <fg-input type="text"
                       label="Company Name"
                       placeholder="Company Name"
-                      v-model="merchant.companyName">
+                      v-model="institution.companyName">
+            </fg-input>
+          </div>
+          <div class="col-md-4">
+            <fg-input type="text"
+                      label="Reg Number"
+                      placeholder="Reg Number"
+                      v-model="institution.regNumber">
             </fg-input>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-md-4">
+            <div class="col-md-6">
             <fg-input type="text"
                       label="Email"
                       placeholder="Email"
-                      v-model="merchant.email">
+                      v-model="institution.email">
             </fg-input>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <fg-input type="text"
                       label="Address"
                       placeholder="Address"
-                      v-model="merchant.address">
-            </fg-input>
-          </div>
-          <div class="col-md-4">
-            <fg-input type="text"
-                      label="Phone Number"
-                      placeholder="Phone Number"
-                      v-model="merchant.phoneNumber">
+                      v-model="institution.address">
             </fg-input>
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-md-12">
+            <fg-input type="text"
+                      label="Phone Number"
+                      placeholder="Phone Number"
+                      v-model="institution.phoneNumber">
+            </fg-input>
+          </div>
+        </div>
 
         <div class="row">
            <div class="col-md-4">
@@ -58,7 +60,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.country"
+              v-model="institution.country"
               required
               @change="getStates()"
             >
@@ -74,7 +76,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.state"
+              v-model="institution.state"
               required
               @change="fetchLgas()"
             >
@@ -90,7 +92,7 @@
             <select
               class="form-control op-border"
               id="rate-type"
-              v-model="merchant.localGovernment"
+              v-model="institution.localGovernment"
               required
             >
               <option value="">Select Local Government</option>
@@ -122,15 +124,12 @@
 </template>
 <script>
 import { mapState, mapActions } from "vuex"
-import Multiselect from 'vue-multiselect'
 export default {
-  components: {
-    Multiselect
-  },
   data() {
     return {
-      merchant: {
-        merchantName: "",
+      institution: {
+        institutionName: "",
+        regNumber: "",
         companyName: "",
         email: "",
         address: "",
@@ -138,33 +137,26 @@ export default {
         country: "",
         state: "",
         localGovernment: ""
-      },
-      selectedInstitution: ""
+      }
     };
   },
   computed: {
     ...mapState(["auth", "loading", "utils"]),
   },
   methods: {
-    ...mapActions(["createMerchant", "getStates", "getLgas", "getCountries", "getInstitutions"]),
+    ...mapActions(["createInstitution", "getStates", "getLgas", "getCountries"]),
     submit() {
-      if(this.selectedInstitution !== ""){
-        this.merchant.institutionId =  this.selectedInstitution._id
-      }
-      this.createMerchant(this.merchant)
+      this.createInstitution(this.institution)
     },
     fetchLgas() {
-      this.merchant.lga = "";
-      this.getLgas(this.merchant.state);
-    },
-    optionLabel ({ institutionName, state, country }) {
-      return `${institutionName}, ${state}, ${country}`
+      this.institution.lga = "";
+      this.getLgas(this.institution.state);
     },
   },
   mounted(){
-    this.getInstitutions();
     this.getCountries();
   }
 };
 </script>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style>
+</style>

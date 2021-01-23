@@ -2,6 +2,8 @@
   <div class="row transaction">
     <div>
       <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
+      <router-link class="btn btn-info m-2" to="/dashboard/upload-terminal"> Upload Terminal</router-link>
+      <router-link class="btn btn-info m-2" to="/dashboard/terminal-configuration"> Terminal Configuration</router-link>
        <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
     </div>
     <div class="col-12 d-flex align-items-center">

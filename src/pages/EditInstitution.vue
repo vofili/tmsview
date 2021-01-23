@@ -1,62 +1,50 @@
 <template>
   <div>
-    <div>
-      <button
-        class="btn btn-info m-2"
-        @click="doDisable"
-        v-if="agent.disabled === false"
-      >
-        Disable Agent
-      </button>
-      <button
-        class="btn btn-info m-2"
-        @click="doEnable"
-        v-if="agent.disabled === true"
-      >
-        Enable Agent
-      </button>
-      <router-link v-if="agent.merchantId" class="btn btn-info m-2" :to="`/dashboard/merchant/${agent.merchantId}/agents`"> Back to Agents </router-link>
+    <div class="col-12">
+      <button class="btn btn-info m-2" @click="doDisable" v-if="institution.disabled === false">Disable Institution</button>
+      <button class="btn btn-info m-2" @click="doEnable" v-if="institution.disabled === true">Enable Institution</button>
+       <router-link class="btn btn-info m-2" :to="`/dashboard/institutions`"> Back to Institutions </router-link>
     </div>
-    <card class="card" title="Add Merchant's Agent">
+    <card class="card" title="Merchant">
       <div>
         <form @submit.prevent>
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-5">
               <fg-input
                 type="text"
-                label="First Name"
-                placeholder="First Name"
-                v-model="agent.firstName"
+                label="Merchant Name"
+                placeholder="Merchant Name"
+                v-model="institution.institutionName"
+              >
+              </fg-input>
+            </div>
+            <div class="col-md-3">
+              <fg-input
+                type="text"
+                label="Company Name"
+                placeholder="Company Name"
+                v-model="institution.companyName"
               >
               </fg-input>
             </div>
             <div class="col-md-4">
               <fg-input
                 type="text"
-                label="Last Name"
-                placeholder="Last Name"
-                v-model="agent.lastName"
-              >
-              </fg-input>
-            </div>
-            <div class="col-md-4">
-              <fg-input
-                type="text"
-                label="Email"
-                placeholder="Email"
-                v-model="agent.email"
+                label="Reg Number"
+                placeholder="Reg Number"
+                v-model="institution.regNumber"
               >
               </fg-input>
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-4">
+              <div class="col-md-4">
               <fg-input
                 type="text"
-                label="Business Name"
-                placeholder="Business Name"
-                v-model="agent.businessName"
+                label="Email"
+                placeholder="Email"
+                v-model="institution.email"
               >
               </fg-input>
             </div>
@@ -65,16 +53,29 @@
                 type="text"
                 label="Address"
                 placeholder="Address"
-                v-model="agent.address"
+                v-model="institution.address"
               >
               </fg-input>
             </div>
             <div class="col-md-4">
               <fg-input
                 type="text"
+                label="Wallet Id"
+                placeholder="WalletId"
+                :disabled="true"
+                v-model="institution.walletId"
+              >
+              </fg-input>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <fg-input
+                type="text"
                 label="Phone Number"
                 placeholder="Phone Number"
-                v-model="agent.phoneNumber"
+                v-model="institution.phoneNumber"
               >
               </fg-input>
             </div>
@@ -86,7 +87,7 @@
               <select
                 class="form-control op-border"
                 id="rate-type"
-                v-model="agent.country"
+                v-model="institution.country"
                 required
                 @change="getStates()"
               >
@@ -106,7 +107,7 @@
               <select
                 class="form-control op-border"
                 id="rate-type"
-                v-model="agent.state"
+                v-model="institution.state"
                 required
                 @change="fetchLgas()"
               >
@@ -122,7 +123,7 @@
               <select
                 class="form-control op-border"
                 id="rate-type"
-                v-model="agent.localGovernment"
+                v-model="institution.localGovernment"
                 required
               >
                 <option value="">Select Local Government</option>
@@ -141,7 +142,7 @@
                 role="status"
                 v-if="loading.show === true"
               ></div>
-              Update Agent
+              Update Institution
             </p-button>
           </div>
           <div class="clearfix"></div>
@@ -156,14 +157,14 @@ import axios from "axios";
 export default {
   data() {
     return {
-      agent: {
-        businessName: "",
+      institution: {
+        institutionName: "",
+        reqNumber: "",
+        companyName: "",
         email: "",
         address: "",
         phoneNumber: "",
         country: "",
-        lastName: "",
-        firstName: "",
         state: "",
         localGovernment: "",
       },
@@ -174,61 +175,51 @@ export default {
   },
   methods: {
     ...mapActions([
+      "editInstitution",
       "getStates",
       "getLgas",
       "getCountries",
-      "getMerchant",
-      "updateAgent",
-      "setNotification",
-      "enableAgent",
-      "disableAgent"
+      "setLoading",
+      "disableInstitution",
+      "enableInstitution"
     ]),
     submit() {
-      this.$confirm("Update Agent?").then(() => {
-        this.updateAgent(this.agent);
+        this.$confirm("Edit Institution Details?").then(() => {
+            const data = { id: this.$route.params.id, ...this.institution}
+            this.editInstitution(data);
       });
     },
     fetchLgas() {
-      this.agent.lga = "";
-      this.getLgas(this.agent.state);
+      this.institution.lga = "";
+      this.getLgas(this.institution.state);
     },
     doDisable(){
-        this.$confirm("Disable Agent! Are you sure?").then(() => {
-            this.disableAgent({ id: this.agent._id })
-            this.getAgent()
+        this.$confirm("Disable Institution! Are you sure?").then(() => {
+            this.disableInstitution({ id: this.$route.params.id })
+            this.getInstitution()
       });
     },
     doEnable(){
-        this.$confirm("Enable Agent?").then(() => {
-            this.enableAgent({ id: this.agent._id})
-            this.getAgent()
+        this.$confirm("Enable Institution?").then(() => {
+            this.enableInstitution({ id: this.$route.params.id })
+            this.getInstitution()
       });
     },
-    async getAgent() {
-      try {
+    async getInstitution(){
+         this.setLoading(true);
         const res = await axios.get(
-          `${process.env.VUE_APP_API_URL}/agent/${this.$route.params.agentId}`
+        `${process.env.VUE_APP_API_URL}/institution/${this.$route.params.id}`
         );
-        const { agent } = res.data;
-        this.agent = agent;
-      } catch (err) {
-        const { data } = err.response.data;
-        console.log(data);
-        if (data) {
-          this.setNotification({
-            type: "danger",
-            message: data.message || "Unable to Fetch Agent Data",
-          });
-        }
-      }
-    },
+        const { institution } = res.data;
+        this.institution = institution;
+        this.getLgas(this.institution.state);
+        this.setLoading(false);
+    }
   },
   async mounted() {
     this.getCountries();
     this.getStates();
-    // this.$route.params.agentId
-    await this.getAgent();
-    this.getLgas(this.agent.state);
+    await this.getInstitution()
   },
 };
 </script>

@@ -16,6 +16,7 @@
       >
         Add Agents To Merchant</router-link
       >
+       <router-link class="btn btn-info m-2" :to="`/dashboard/merchants`"> Back to Merchants </router-link>
     </div>
 
     <div class="col-12">

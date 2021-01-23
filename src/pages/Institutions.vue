@@ -7,8 +7,8 @@
     <!-- <h4>Transactions</h4> -->
     <div class="p-4 col-12">
       <button class="btn btn-info m-2" @click="refresh('refresh')">Refresh</button>
-      <router-link class="btn btn-info m-2"  :to="`/dashboard/create-merchant`">
-        Add Merchant</router-link>
+      <router-link class="btn btn-info m-2"  :to="`/dashboard/create-institution`">
+        Add Institution</router-link>
     </div>
 
     <div class="col-12">
@@ -18,9 +18,9 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
-                <th scope="col" class="text-center">Merchant Name</th>
+                <th scope="col" class="text-center">Institution Name</th>
                 <th scope="col" class="text-center">Company Name</th>
-                <th scope="col" class="text-center">Institution</th>
+                <th scope="col" class="text-center">Reg Number</th>
                 <th scope="col" class="text-center">Email</th>
                 <th scope="col" class="text-center">Wallet Id</th>
                 <th scope="col" class="text-center">Phone Number</th>
@@ -32,26 +32,23 @@
             </thead>
             <tbody>
               <tr
-                v-for="(merchant, index) in merchants"
-                :key="merchant._id"
+                v-for="(institution, index) in institutions"
+                :key="institution._id"
               >
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ merchant.merchantName }}</td>
-                <td class="text-center">{{ merchant.companyName }}</td>
-                <td class="text-center">{{ merchant.institutionName || 'NULL' }}</td>
-                <td class="text-center">{{ merchant.email }}</td>
-                <td class="text-center">{{ merchant.walletId }}</td>
-                <td class="text-center">{{ merchant.phoneNumber }}</td>
-                <td class="text-center">{{ merchant.address }}</td>
-                <td class="text-center">{{ merchant.state }}</td>
-                <td class="text-center">{{ merchant.country }}</td>
+                <td class="text-center">{{ institution.institutionName }}</td>
+                <td class="text-center">{{ institution.companyName }}</td>
+                <td class="text-center">{{ institution.regNumber }}</td>
+                <td class="text-center">{{ institution.email }}</td>
+                <td class="text-center">{{ institution.walletId }}</td>
+                <td class="text-center">{{ institution.phoneNumber }}</td>
+                <td class="text-center">{{ institution.address }}</td>
+                <td class="text-center">{{ institution.state }}</td>
+                <td class="text-center">{{ institution.country }}</td>
                 <td class="text-center">
                   <drop-down class="nav-item" title="Options" id="list">
                     <div class="p-2">                        
-                        <router-link :to="`/dashboard/merchant/${merchant._id}`"> View Merchant </router-link>
-                    </div>
-                    <div class="p-2">
-                        <router-link :to="`/dashboard/merchant/${merchant._id}/agents`"> View Agents </router-link>
+                        <router-link :to="`/dashboard/institution/${institution._id}`"> View Institution </router-link>
                     </div>
                   </drop-down>
                 </td>
@@ -92,7 +89,7 @@ export default {
   data() {
     return {
       error: false,
-      merchants: [],
+      institutions: [],
       errorMsg: "",
       loading: false,
       moment,
@@ -124,7 +121,7 @@ export default {
             break;
         }
         const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
+          `${process.env.VUE_APP_API_URL}/auth/get-institutions`,
           payload
         );
         const {
@@ -134,8 +131,8 @@ export default {
           totalPages,
           prevPage,
           nextPage,
-        } = res.data.merchants;
-        this.merchants = docs;
+        } = res.data.institutions;
+        this.institutions = docs;
         this.hasPrevPage = hasPrevPage;
         this.hasNextPage = hasNextPage;
         this.totalPages = totalPages;
@@ -144,7 +141,7 @@ export default {
       } catch (err) {
         console.log(err);
         this.error = true;
-        this.errorMsg = "Unable to Fetch Merchants";
+        this.errorMsg = "Unable to Fetch Institutions";
       }
       this.loading = false;
     },
@@ -153,7 +150,7 @@ export default {
     try {
       this.loading = true;
       const res = await axios.post(
-        `${process.env.VUE_APP_API_URL}/auth/get-merchants`,
+        `${process.env.VUE_APP_API_URL}/auth/get-institutions`,
         {
           page: this.page,
         }
@@ -165,8 +162,8 @@ export default {
         totalPages,
         prevPage,
         nextPage,
-      } = res.data.merchants;
-      this.merchants = docs;
+      } = res.data.institutions;
+      this.institutions = docs;
       this.hasPrevPage = hasPrevPage;
       this.hasNextPage = hasNextPage;
       this.totalPages = totalPages;
@@ -176,7 +173,7 @@ export default {
     } catch (err) {
       console.log(err);
       this.error = true;
-      this.errorMsg = "Unable to Fetch Merchants";
+      this.errorMsg = "Unable to Fetch Institutions";
     }
     this.loading = false;
   },

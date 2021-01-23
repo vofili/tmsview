@@ -108,6 +108,29 @@ export default {
           commit("setLoading", false);
         });
     },
+    uploadTerminal({ commit }, data) {
+      commit("setLoading", true);
+      axios
+      .post(`${url}/terminal/upload`, data)
+      .then((res) => {
+        const { message } = res.data;
+        commit("setNotification", { type: "success", message });
+        commit("setLoading", false);
+
+        router.push("/dashboard/terminals");
+
+      })
+      .catch((err) => {
+        const { message, errors } = err.response.data;
+        commit("setNotification", { type: "danger", message });
+        if(errors){
+          Object.values(errors).forEach(element => {
+            commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+          });
+        }
+        commit("setLoading", false);
+      });     
+  },
   },
   mutations: {
     setUser(state, user) {

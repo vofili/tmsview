@@ -53,8 +53,8 @@
               <div class="col-md-6">
                     <select class="form-control" v-model="user.userType" >
                     <option value="">Select a User Type</option>
-                    <option value="user">User</option>
-                    <option value="admin"> Admin</option>
+                    <option value="user">Agent</option>
+                    <option value="admin"> Merchant</option>
                     <option value="super-admin">Super Admin</option>
                 </select>
               </div>
