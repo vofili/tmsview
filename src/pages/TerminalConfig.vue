@@ -22,7 +22,7 @@
             <fg-input type="text"
                       label="Nibbs Port"
                       placeholder="Nibbs Port"
-                      v-model="config.nibbsIp">
+                      v-model="config.nibbsPort">
             </fg-input>
           </div>
         </div>
@@ -62,30 +62,57 @@
           </div>
           <div class="col-md-3">
 
-            <fg-input type="text"
+            <fg-input type="number"
                       label="Contactless Trans Limit"
                       placeholder="Contactless Trans Limit"
                       v-model="config.contactlessTransLimit">
             </fg-input>
           </div>
-          <div class="col-md-4">
+
+          <div class="col-md-3">
+
             <fg-input type="text"
-                      label="POS Data Code"
-                      placeholder="POS Data Code"
-                      v-model="config.posDataCode">
+                      label="Processor Merchant Location"
+                      placeholder="Processor Merchant Location"
+                      v-model="config.processorMerchantLocation">
             </fg-input>
           </div>
         </div>
 
+        <h4>Configuration Panel</h4>
+
+        <div class="p-4">
+            <div class="row">
+                <div class="form-group form-check">
+                    <input type="checkbox" v-model="config.disableAll" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Disable All Terminals</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group form-check">
+                    <input type="checkbox" v-model="config.forceConfigAll" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Force Configure All Terminals</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group form-check">
+                    <input type="checkbox" v-model="config.upgradeAll" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Upgrade All Terminals</label>
+                </div>
+            </div>
+        </div>
+
         <div class="text-center">
-          <!-- <p-button type="info" round
+          <p-button type="info" round
                     @click.native.prevent="submit">
             <div
                   class="spinner-grow"
                   role="status"
                   v-if="loading.show === true"
                 ></div> Save Configuration
-          </p-button> -->
+          </p-button>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -95,6 +122,7 @@
 <script>
 import { mapState, mapActions } from "vuex"
 import Multiselect from 'vue-multiselect'
+import axios from "axios"
 export default {
   components: {
     Multiselect
@@ -102,6 +130,18 @@ export default {
   data() {
     return {
       config: {
+        tmsBaseUrl: "",
+        nibbsIp: "",
+        nibbsPort: "",
+        nibbsEnv: "",
+        nibbsKey: "",
+        posDataCode: "",
+        contactlessCvmLimit: "",
+        contactlessTransLimit: "",
+        processorMerchantLocation: "",
+        disableAll: false,
+        forceConfigAll: false,
+        upgradeAll: false
       },
     };
   },
@@ -109,22 +149,23 @@ export default {
     ...mapState(["auth", "loading", "utils"]),
   },
   methods: {
-    ...mapActions(["createTerminal", "getMerchants", "getStates", "getLgas", "getCountries", "getAllMerchantAgents"]),
+    ...mapActions(["saveConfig", "setNotification", "setLoading" ]),
     submit() {
       this.saveConfig(this.config)
     },
-    // optionLabel ({ merchantName, state, country }) {
-    //   return `${merchantName}, ${state}, ${country}`
-    // }, 
-    // optionLabel2 ({ firstName, lastName, agentId }) {
-    //   return `${firstName}, ${lastName}, ${agentId}`
-    // }, 
-    // fetchLgas() {
-    //   this.config.lga = "";
-    //   this.getLgas(this.config.state);
-    // }
   },
-  mounted(){
+  async mounted(){
+     try {
+      this.setLoading(true)
+      const res = await axios.get( `${process.env.VUE_APP_API_URL}/terminal/configuration/get`);
+      const {config } = res.data;
+      this.config = config
+    } catch (err) {
+      console.log(err);
+      const { message } = err.response.data
+      this.setNotification( { type: "danger", message })
+    }
+    this.setLoading(false);
   }
 };
 </script>

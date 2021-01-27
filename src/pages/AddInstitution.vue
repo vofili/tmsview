@@ -110,11 +110,11 @@
           <p-button type="info" round
                     @click.native.prevent="submit">
             <div
-                  class="spinner-grow"
+                  class="spinner-grow"npm
                   role="status"
                   v-if="loading.show === true"
                 ></div>
-            Add Merchant
+            Add Institution
           </p-button>
         </div>
         <div class="clearfix"></div>

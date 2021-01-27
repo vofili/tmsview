@@ -118,6 +118,24 @@
             </div>
           </div>
 
+          <h4>Configuration Panel</h4>
+
+        <div class="p-4">
+            <div class="row">
+                <div class="form-group form-check">
+                    <input type="checkbox" v-model="terminal.forceConfig" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Force Configure Terminal</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group form-check">
+                    <input type="checkbox" v-model="terminal.forceUpgrade" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Force Upgrade Terminal</label>
+                </div>
+            </div>
+        </div>
+
           <div class="text-center">
             <p-button type="info" round @click.native.prevent="submit">
               <div
@@ -150,6 +168,8 @@ export default {
         country: "",
         state: "",
         localGovernment: "",
+        forceConfig: false, 
+        forceUpgrade: false
       },
     };
   },

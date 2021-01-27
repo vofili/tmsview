@@ -70,6 +70,15 @@
               Filter
             </button>
           </div>
+          <div class="col-auto mt-2">
+            <button
+              type="submit"
+              class="btn btn-primary mb-2 mt-4"
+              @click="refresh('download')"
+            >
+              Download
+            </button>
+          </div>
         </div>
     </div>
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
@@ -168,6 +177,8 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import fileDownload from "js-file-download"
+import { convertArrayToCSV } from'convert-array-to-csv';
 export default {
   components: {},
   data() {
@@ -210,25 +221,33 @@ export default {
           case "previous":
             payload = {...payload, page: this.prevPage };
             break;
+          case "download":
+              payload = {...payload, download: true };
+              break;
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/transactions/details`,
           payload
         );
-        const {
-          docs,
-          hasNextPage,
-          hasPrevPage,
-          totalPages,
-          prevPage,
-          nextPage,
-        } = res.data.transactions;
-        this.transactions = docs;
-        this.hasPrevPage = hasPrevPage;
-        this.hasNextPage = hasNextPage;
-        this.totalPages = totalPages;
-        this.prevPage = prevPage;
-        this.nextPage = nextPage;
+        if (mode === "download") {
+          const csvTran = convertArrayToCSV(res.data.transactions);
+          fileDownload(csvTran, "transactions.csv");
+        } else {
+          const {
+            docs,
+            hasNextPage,
+            hasPrevPage,
+            totalPages,
+            prevPage,
+            nextPage,
+          } = res.data.transactions;
+          this.transactions = docs;
+          this.hasPrevPage = hasPrevPage;
+          this.hasNextPage = hasNextPage;
+          this.totalPages = totalPages;
+          this.prevPage = prevPage;
+          this.nextPage = nextPage;
+        }
       } catch (err) {
         console.log(err);
         this.error = true;
