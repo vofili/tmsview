@@ -129,7 +129,7 @@
                       : "NULL"
                   }}
                 </td>
-                <!-- <td  class="text-center">{{ transaction.status}}</td>                 -->
+                
                 <td class="text-center">
                   {{
                     transaction.response

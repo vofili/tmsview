@@ -104,6 +104,28 @@
           </div>
         </div>
 
+
+        <div class="row">
+          <div class="col-md-6 p-2">
+                <input
+                  type="password"
+                  class="form-control border"
+                  label="Password"
+                  placeholder="Password"
+                  v-model="merchant.password"
+                />
+              </div>
+              <div class="col-md-6 p-2">
+                <input
+                  type="password"
+                  class="form-control border"
+                  label="Password Confirmation"
+                  placeholder="Password Confirmation"
+                  v-model="merchant.password_confirmation"
+                />
+              </div>
+        </div>
+
         <div class="text-center">
           <p-button type="info" round
                     @click.native.prevent="submit">

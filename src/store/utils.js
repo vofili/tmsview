@@ -95,7 +95,7 @@ export default {
         state.allStates = payload.allStates
     },
     setLga(state, payload){
-        state.lgas = payload.lgas
+        state.lgas = payload.lgas.locals
     },
     setCountries(state, payload){
       state.countries = payload.Countries
