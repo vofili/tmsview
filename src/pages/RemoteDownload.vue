@@ -1,80 +1,104 @@
 <template>
   <div class="row transaction">
     <div>
-      <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
+      <!-- <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
       <router-link class="btn btn-info m-2" to="/dashboard/upload-terminal"> Upload Terminal</router-link>
       <router-link class="btn btn-info m-2" to="/dashboard/terminal-configuration"> Terminal Configuration</router-link>
-      <router-link class="btn btn-info m-2" to="/dashboard/terminal-remote-download"> Remote Download </router-link>
-       <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
+      <router-link class="btn btn-info m-2" to="/dashboard/terminal-remote-download"> Remote Download </router-link> -->
+      <!-- <button class="btn btn-info" @click="refresh('refresh')">Refresh</button> -->
+    </div>
+    <div class="row mb-4 pl-2">
+      <div class="col-md-6 mt-2">
+        <label>Upload Terminal Application</label>
+        <div>
+          <input
+            type="file"
+            class="form-control"
+            accept=".csv"
+            :file="this.file"
+            @change="fileChange"
+          />
+        </div>
+      </div>
+      <div class="col-md-6 mt-2">
+        <label>Version</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="Terminal Version"
+            v-model="version"
+          />
+        </div>
+      </div>
     </div>
     <div class="col-12 d-flex align-items-center">
-        <div class="form-row align-items-center">
-          <div class="col-auto mt-2">
-            <label>Terminal Id</label>
-            <div class="input-group mb-2">
-              <input
-                type="text"
-                class="form-control"
-                id="inlineFormInputGroup"
-                placeholder="Terminal Id"
-                v-model="terminalId"
-              />
-            </div>
-          </div>
-          <div class="col-auto mt-2">
-            <label>Serial Number</label>
-            <div class="input-group mb-2">
-              <input
-                type="text"
-                class="form-control"
-                id="inlineFormInputGroup"
-                placeholder="Serial Number"
-                v-model="serialNo"
-              />
-            </div>
-          </div>
-          <div class="col-auto mt-2">
-            <label>Merchant Id</label>
-            <div class="input-group mb-2">
-              <input
-                type="text"
-                class="form-control"
-                id="inlineFormInputGroup"
-                placeholder="Merchant Id"
-                v-model="merchantId"
-              />
-            </div>
-          </div>
-
-          <div class="col-auto mt-2">
-            <label>Agent Id</label>
-            <div class="input-group mb-2">
-              <input
-                type="text"
-                class="form-control"
-                id="inlineFormInputGroup"
-                placeholder="Agent Id"
-                v-model="agentId"
-              />
-            </div>
-          </div>
-
-          <div class="col-auto mt-2">
-            <button
-              type="submit"
-              class="btn btn-primary mb-2 mt-4"
-              @click="refresh('filter')"
-            >
-              Filter
-            </button>
+      <div class="row align-items-center">
+        <div class="col-md-6 mt-2">
+          <label>Merchant Name</label>
+          <multiselect
+            v-model="selectedMerchant"
+            :custom-label="optionLabel"
+            track-by="_id"
+            :options="utils.merchants"
+            :allow-empty="false"
+            placeholder="Select a Merchant"
+          >
+            <template slot="singleLabel" slot-scope="{ option }">
+              {{ option.merchantName }}
+            </template>
+          </multiselect>
+        </div>
+        <div class="col-md-3 mt-2">
+          <label>Merchant Id</label>
+          <div class="input-group mb-2">
+            <input
+              type="text"
+              class="form-control"
+              id="inlineFormInputGroup"
+              placeholder="Merchant Id"
+              v-model="merchantId"
+            />
           </div>
         </div>
+        <div class="col-md-3 mt-2">
+          <label>Terminal Id</label>
+          <div class="input-group mb-2">
+            <input
+              type="text"
+              class="form-control"
+              id="inlineFormInputGroup"
+              placeholder="Terminal Id"
+              v-model="terminalId"
+            />
+          </div>
+        </div>
+
+        <div class="col-auto mt-2">
+          <button
+            type="submit"
+            class="btn btn-primary mb-2 mt-4"
+            @click="refresh('filter')"
+          >
+            Search
+          </button>
+        </div>
+        <div class="col-auto mt-2">
+          <button
+            type="submit"
+            class="btn btn-primary mb-2 mt-4"
+            @click="schedule"
+          >
+            Schedule
+          </button>
+        </div>
+      </div>
     </div>
-    <div  class="spinner-grow" role="status" v-if="loading === true"></div>
+    <div class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
-    
 
     <div class="col-12">
       <card class="card-plain">
@@ -94,22 +118,25 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(terminal, index) in terminals"
-                :key="terminal._id"
-              >
+              <tr v-for="(terminal, index) in terminals" :key="terminal._id">
                 <th class="text-center">{{ index + 1 }}</th>
                 <td class="text-center">{{ terminal.terminalId }}</td>
                 <td class="text-center">{{ terminal.serialNo }}</td>
                 <!-- <td class="text-center">{{ terminal.currentVersion }}</td> -->
                 <td class="text-center">{{ terminal.merchantId }}</td>
-                <td class="text-center">{{ terminal.tmsMerchantName || "" }}</td>
+                <td class="text-center">
+                  {{ terminal.tmsMerchantName || "" }}
+                </td>
                 <td class="text-center">{{ terminal.agentId || "" }}</td>
                 <td class="text-center">{{ terminal.agentName || "" }}</td>
                 <td class="text-center">
                   <drop-down class="nav-item" title="Options" id="list">
-                    <div class="p-2">                        
-                        <router-link :to="`/dashboard/view-terminal/${terminal.terminalId}`"> View </router-link>
+                    <div class="p-2">
+                      <router-link
+                        :to="`/dashboard/view-terminal/${terminal.terminalId}`"
+                      >
+                        View
+                      </router-link>
                     </div>
                   </drop-down>
                 </td>
@@ -145,11 +172,17 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import { mapState, mapActions } from "vuex"
+import { mapState, mapActions } from "vuex";
+import Multiselect from "vue-multiselect";
 export default {
-  components: {},
+  components: {
+    Multiselect,
+  },
   data() {
     return {
+      selectedMerchant: "",
+      version: "", 
+      file: "",
       error: false,
       terminals: [],
       errorMsg: "",
@@ -167,10 +200,10 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
-      terminalId:"",
+      terminalId: "",
       merchantId: "",
       serialNo: "",
-      agentId: ""
+      agentId: "",
     };
   },
   computed: {
@@ -181,13 +214,19 @@ export default {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page, terminalId: this.terminalId, merchantId: this.merchantId, serialNo: this.serialNo, agentId: this.agentId };
+        let payload = {
+          page: this.page,
+          terminalId: this.terminalId,
+          merchantId: this.merchantId,
+          serialNo: this.serialNo,
+          agentId: this.agentId,
+        };
         switch (mode) {
           case "next":
-            payload = {...payload, page: this.nextPage };
+            payload = { ...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = {...payload, page: this.prevPage };
+            payload = { ...payload, page: this.prevPage };
             break;
         }
         const res = await axios.post(
@@ -215,41 +254,18 @@ export default {
       }
       this.loading = false;
     },
-    getMerchantName(id){
-        const merchant = this.utils.merchants.filter(el => el._id === id);
-        return merchant.length !== 0 ? merchant[0].merchantName : ""
+    fileChange(e) {
+      const file = e.target.files[0];
+      this.file = file;
+    },
+    optionLabel({ merchantName, state, country }) {
+      return `${merchantName}, ${state}, ${country}`;
+    },
+    async schdule(){
+        console.log('schedule clicked');
     }
   },
-  async mounted() {
-    try {
-      this.loading = true;
-      const res = await axios.post(
-        `${process.env.VUE_APP_API_URL}/terminals/get`,
-        {
-          page: this.page,
-        }
-      );
-      const {
-        docs,
-        hasNextPage,
-        hasPrevPage,
-        totalPages,
-        prevPage,
-        nextPage,
-      } = res.data.terminals;
-      this.terminals = docs;
-      this.hasPrevPage = hasPrevPage;
-      this.hasNextPage = hasNextPage;
-      this.totalPages = totalPages;
-      this.prevPage = prevPage;
-      this.nextPage = nextPage;
-    
-    } catch (err) {
-      console.log(err);
-      this.error = true;
-      this.errorMsg = "Unable to Fetch Terminals";
-    }
-    this.loading = false;
+  mounted() {
     this.getMerchants();
   },
 };
@@ -265,6 +281,7 @@ th {
   position: fixed;
 }
 #list {
-    list-style-type: none;
+  list-style-type: none;
 }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

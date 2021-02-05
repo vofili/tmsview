@@ -125,7 +125,7 @@
                 <td class="text-center">
                   {{
                     transaction.location
-                      ? `${transaction.location.city}, ${transaction.location.country}`
+                      ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
                       : "NULL"
                   }}
                 </td>

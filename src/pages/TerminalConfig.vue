@@ -79,6 +79,24 @@
           </div>
         </div>
 
+         <div class="row">
+          <div class="col-md-5">
+            <fg-input type="number"
+                        label="Curerncy Code"
+                      placeholder="Currency Code"
+                      v-model="config.currencyCode">
+            </fg-input>
+          </div>
+          <div class="col-md-3">
+
+            <fg-input type="number"
+                      label="Country Code"
+                      placeholder="Country Code"
+                      v-model="config.countryCode">
+            </fg-input>
+          </div>
+        </div>
+
         <h4>Configuration Panel</h4>
 
         <div class="p-4">
@@ -139,6 +157,8 @@ export default {
         contactlessCvmLimit: "",
         contactlessTransLimit: "",
         processorMerchantLocation: "",
+        countryCode: "", 
+        currencyCode: "",
         disableAll: false,
         forceConfigAll: false,
         upgradeAll: false

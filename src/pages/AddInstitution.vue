@@ -86,7 +86,7 @@
               </option>
             </select>
           </div>
-         
+
           <div class="col-md-4">
             <label>Local Government</label>
             <select
@@ -105,12 +105,35 @@
             </span>
           </div>
         </div>
+        
+        <div class="row">
+          <div class="col-md-6 p-2">
+            <label>Password</label>
+                <input
+                  type="password"
+                  class="form-control border"
+                  label="Password"
+                  placeholder="Password"
+                  v-model="institution.password"
+                />
+              </div>
+              <div class="col-md-6 p-2">
+                <label>Password Confirmation</label>
+                <input
+                  type="password"
+                  class="form-control border"
+                  label="Password Confirmation"
+                  placeholder="Password Confirmation"
+                  v-model="institution.password_confirmation"
+                />
+              </div>
+        </div>
 
         <div class="text-center">
           <p-button type="info" round
                     @click.native.prevent="submit">
             <div
-                  class="spinner-grow"npm
+                  class="spinner-grow"
                   role="status"
                   v-if="loading.show === true"
                 ></div>
@@ -136,6 +159,8 @@ export default {
         phoneNumber: "",
         country: "",
         state: "",
+        password: "",
+        password_confirmation: "",
         localGovernment: ""
       }
     };

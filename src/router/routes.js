@@ -28,6 +28,7 @@ import AddInstitution from "@/pages/AddInstitution.vue"
 import Institutions from "@/pages/Institutions.vue"
 import EditInstitution from "@/pages/EditInstitution.vue"
 import TerminalConfig from "@/pages/TerminalConfig"
+import RemoteDownload from "@/pages/RemoteDownload.vue"
 
 const routes = [
   {
@@ -132,8 +133,13 @@ const routes = [
       },      
       {
         path: "terminals",
-        name: "terminals",
+        name: "Terminals",
         component: Terminals
+      },
+      {
+        path: "terminal-remote-download",
+        name: "Remote Download",
+        component: RemoteDownload
       },
       {
         path: "view-terminal/:terminalId",

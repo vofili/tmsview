@@ -9,19 +9,21 @@
         />
 
         <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
-
+        
         <sidebar-link
-          to="/dashboard/create-user"
-          name="Create User"
-          icon="ti-plus"
+          to="/dashboard/institutions"
+          name="Institutions"
+          icon="ti-crown"
           v-if="auth.user.userType === 'super-admin'"
         />
+
         <!-- <sidebar-link
           to="/dashboard/create-merchant"
           name="Create Merchant"
           icon="ti-medall"
           v-if="auth.user.userType === 'super-admin'"
         /> -->
+
         <sidebar-link
           to="/dashboard/merchants"
           name="Merchants"
@@ -44,16 +46,16 @@
         />
 
         <sidebar-link
-          to="/dashboard/institutions"
-          name="Institutions"
-          icon="ti-crown"
-          v-if="auth.user.userType === 'super-admin'"
-        />
-
-        <sidebar-link
           to="/dashboard/wallet-reports"
           name="Wallet Reports"
           icon="ti-wallet"
+        />
+
+        <sidebar-link
+          to="/dashboard/create-user"
+          name="Create User"
+          icon="ti-plus"
+          v-if="auth.user.userType === 'super-admin'"
         />
         
         <!-- <sidebar-link
@@ -78,11 +80,11 @@
           name="Notifications"
           icon="ti-bell"
         /> -->
-        <sidebar-link
+        <!-- <sidebar-link
           to="/dashboard/icons"
           name="Icons"
           icon="ti-pencil-alt2"
-        />
+        /> -->
       </template>
       <mobile-menu>
         
