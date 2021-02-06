@@ -1,12 +1,5 @@
 <template>
   <div class="row transaction">
-    <div>
-      <!-- <router-link class="btn btn-info m-2" to="/dashboard/add-terminal"> Add Terminal</router-link>
-      <router-link class="btn btn-info m-2" to="/dashboard/upload-terminal"> Upload Terminal</router-link>
-      <router-link class="btn btn-info m-2" to="/dashboard/terminal-configuration"> Terminal Configuration</router-link>
-      <router-link class="btn btn-info m-2" to="/dashboard/terminal-remote-download"> Remote Download </router-link> -->
-      <!-- <button class="btn btn-info" @click="refresh('refresh')">Refresh</button> -->
-    </div>
     <div class="row mb-4 pl-2">
       <div class="col-md-6 mt-2">
         <label>Upload Terminal Application</label>
@@ -14,7 +7,6 @@
           <input
             type="file"
             class="form-control"
-            accept=".csv"
             :file="this.file"
             @change="fileChange"
           />
@@ -44,6 +36,7 @@
             :options="utils.merchants"
             :allow-empty="false"
             placeholder="Select a Merchant"
+            @close="setMerchant"
           >
             <template slot="singleLabel" slot-scope="{ option }">
               {{ option.merchantName }}
@@ -87,6 +80,7 @@
         <div class="col-auto mt-2">
           <button
             type="submit"
+            :disabled="terminals.length === 0"
             class="btn btn-primary mb-2 mt-4"
             @click="schedule"
           >
@@ -95,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class="spinner-grow" role="status" v-if="loading === true"></div>
+    <div class="spinner-grow" role="status" v-if="loading.show === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
@@ -107,38 +101,29 @@
             <thead class="thead-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
+                <th scope="col" class="text-center">Merchant</th>
                 <th scope="col" class="text-center">Terminal Id</th>
-                <th scope="col" class="text-center">Serial No</th>
-                <!-- <th scope="col" class="text-center">Current Version</th> -->
                 <th scope="col" class="text-center">Merchant Id</th>
-                <th scope="col" class="text-center">Merchant Name</th>
-                <th scope="col" class="text-center">Agent Id</th>
+                <!-- <th scope="col" class="text-center">Merchant Location</th> -->
+                <th scope="col" class="text-center">Version</th>
+                <th scope="col" class="text-center">App Name</th>
                 <th scope="col" class="text-center">Agent Name</th>
-                <th scope="col" class="text-center">Action</th>
+                <th scope="col" class="text-center">Status</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(terminal, index) in terminals" :key="terminal._id">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ terminal.terminalId }}</td>
-                <td class="text-center">{{ terminal.serialNo }}</td>
-                <!-- <td class="text-center">{{ terminal.currentVersion }}</td> -->
-                <td class="text-center">{{ terminal.merchantId }}</td>
                 <td class="text-center">
                   {{ terminal.tmsMerchantName || "" }}
                 </td>
-                <td class="text-center">{{ terminal.agentId || "" }}</td>
+                <td class="text-center">{{ terminal.terminalId }}</td>
+                <td class="text-center">{{ terminal.merchantId }}</td>
+                <td class="text-center">{{ terminal.appVersion }}</td>
+                <td class="text-center">{{ terminal.appName }}</td>
                 <td class="text-center">{{ terminal.agentName || "" }}</td>
                 <td class="text-center">
-                  <drop-down class="nav-item" title="Options" id="list">
-                    <div class="p-2">
-                      <router-link
-                        :to="`/dashboard/view-terminal/${terminal.terminalId}`"
-                      >
-                        View
-                      </router-link>
-                    </div>
-                  </drop-down>
+                  {{ terminal.forceUpgrade === true ? "Pending" : "Completed" }}
                 </td>
               </tr>
             </tbody>
@@ -181,12 +166,11 @@ export default {
   data() {
     return {
       selectedMerchant: "",
-      version: "", 
+      version: "",
       file: "",
       error: false,
       terminals: [],
       errorMsg: "",
-      loading: false,
       moment,
       format: new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 2,
@@ -197,29 +181,29 @@ export default {
       limit: 20,
       totalPages: 0,
       hasPrevPage: false,
-      hasNextPage: true,
+      hasNextPage: false,
       prevPage: null,
       nextPage: null,
       terminalId: "",
       merchantId: "",
       serialNo: "",
       agentId: "",
+      tmsMerchantId: "",
     };
   },
   computed: {
-    ...mapState(["utils"]),
+    ...mapState(["utils", "loading"]),
   },
   methods: {
-    ...mapActions(["getMerchants"]),
+    ...mapActions(["getMerchants", "setNotification", "scheduleDownloads",  "setLoading"]),
     async refresh(mode) {
       try {
-        this.loading = true;
+        this.setLoading(true);
         let payload = {
           page: this.page,
           terminalId: this.terminalId,
           merchantId: this.merchantId,
-          serialNo: this.serialNo,
-          agentId: this.agentId,
+          tmsMerchantId: this.tmsMerchantId,
         };
         switch (mode) {
           case "next":
@@ -230,7 +214,7 @@ export default {
             break;
         }
         const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/terminals/get`,
+          `${process.env.VUE_APP_API_URL}/terminals/get-upgrade-list`,
           payload
         );
         const {
@@ -250,9 +234,12 @@ export default {
       } catch (err) {
         console.log(err);
         this.error = true;
-        this.errorMsg = "Unable to Fetch Terminals";
+        this.setNotification({
+          type: "danger",
+          message: "Unable to Fetch Terminal",
+        });
       }
-      this.loading = false;
+      this.setLoading(false);
     },
     fileChange(e) {
       const file = e.target.files[0];
@@ -261,9 +248,21 @@ export default {
     optionLabel({ merchantName, state, country }) {
       return `${merchantName}, ${state}, ${country}`;
     },
-    async schdule(){
-        console.log('schedule clicked');
-    }
+    schedule() {
+      this.$confirm("Upgrade Terminals ?").then(() => {
+        const terminals = this.terminals.map((item) => item.terminalId);
+        const formData = new FormData();
+        formData.append("app", this.file);
+        formData.append("terminals", JSON.stringify(terminals));
+        formData.append("version", this.version);
+        console.log(formData.get("terminals"));
+        this.scheduleDownloads(formData);
+      });
+    },
+    setMerchant() {
+      if (this.selectedMerchant !== "")
+        this.tmsMerchantId = this.selectedMerchant._id || "";
+    },
   },
   mounted() {
     this.getMerchants();

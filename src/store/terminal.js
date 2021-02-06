@@ -5,12 +5,12 @@ const url = process.env.VUE_APP_API_URL;
 
 export default {
   state: {
-      terminals: []
+    terminals: []
   },
   actions: {
     createTerminal({ commit }, data) {
-        commit("setLoading", true);
-        axios
+      commit("setLoading", true);
+      axios
         .post(`${url}/terminal/create`, data)
         .then((res) => {
           const { message } = res.data;
@@ -23,13 +23,13 @@ export default {
         .catch((err) => {
           const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
-          if(errors){
+          if (errors) {
             Object.values(errors).forEach(element => {
               commit("setNotification", { type: "danger", message: JSON.stringify(element) });
             });
           }
           commit("setLoading", false);
-        });     
+        });
     },
     updateTerminal({ commit }, data) {
       commit("setLoading", true);
@@ -42,7 +42,7 @@ export default {
         .catch((err) => {
           const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
-          if(errors){
+          if (errors) {
             Object.values(errors).forEach(element => {
               commit("setNotification", { type: "danger", message: JSON.stringify(element) });
             });
@@ -61,7 +61,7 @@ export default {
         .catch((err) => {
           const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
-          if(errors){
+          if (errors) {
             Object.values(errors).forEach(element => {
               commit("setNotification", { type: "danger", message: JSON.stringify(element) });
             });
@@ -80,7 +80,7 @@ export default {
         .catch((err) => {
           const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
-          if(errors){
+          if (errors) {
             Object.values(errors).forEach(element => {
               commit("setNotification", { type: "danger", message: JSON.stringify(element) });
             });
@@ -100,7 +100,7 @@ export default {
         .catch((err) => {
           const { message, errors } = err.response.data;
           commit("setNotification", { type: "danger", message });
-          if(errors){
+          if (errors) {
             Object.values(errors).forEach(element => {
               commit("setNotification", { type: "danger", message: JSON.stringify(element) });
             });
@@ -111,46 +111,66 @@ export default {
     uploadTerminal({ commit }, data) {
       commit("setLoading", true);
       axios
-      .post(`${url}/terminal/upload`, data)
-      .then((res) => {
-        const { message } = res.data;
-        commit("setNotification", { type: "success", message });
-        commit("setLoading", false);
+        .post(`${url}/terminal/upload`, data)
+        .then((res) => {
+          const { message } = res.data;
+          commit("setNotification", { type: "success", message });
+          commit("setLoading", false);
 
-        router.push("/dashboard/terminals");
+          router.push("/dashboard/terminals");
 
-      })
-      .catch((err) => {
-        const { message, errors } = err.response.data;
-        commit("setNotification", { type: "danger", message });
-        if(errors){
-          Object.values(errors).forEach(element => {
-            commit("setNotification", { type: "danger", message: JSON.stringify(element) });
-          });
-        }
-        commit("setLoading", false);
-      });     
-  },
-  saveConfig({ commit }, data) {
-    commit("setLoading", true);
-    axios
-    .post(`${url}/terminal/save-configurations`, data)
-    .then((res) => {
-      const { message } = res.data;
-      commit("setNotification", { type: "success", message });
-      commit("setLoading", false);
-    })
-    .catch((err) => {
-      const { message, errors } = err.response.data;
-      commit("setNotification", { type: "danger", message });
-      if(errors){
-        Object.values(errors).forEach(element => {
-          commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
         });
-      }
-      commit("setLoading", false);
-    });     
-},
+    },
+    saveConfig({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/terminal/save-configurations`, data)
+        .then((res) => {
+          const { message } = res.data;
+          commit("setNotification", { type: "success", message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    scheduleDownloads({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/terminal/schedule-downloads`, data)
+        .then((res) => {
+          const { message } = res.data;
+          commit("setNotification", { type: "success", message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
   },
   mutations: {
     setUser(state, user) {
