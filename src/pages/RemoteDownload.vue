@@ -79,6 +79,14 @@
         </div>
         <div class="col-auto mt-2">
           <button
+            class="btn btn-primary mb-2 mt-4"
+            @click="clear"
+          >
+            Clear Form
+          </button>
+        </div>
+        <div class="col-auto mt-2">
+          <button
             type="submit"
             :disabled="terminals.length === 0"
             class="btn btn-primary mb-2 mt-4"
@@ -104,7 +112,7 @@
                 <th scope="col" class="text-center">Merchant</th>
                 <th scope="col" class="text-center">Terminal Id</th>
                 <th scope="col" class="text-center">Merchant Id</th>
-                <!-- <th scope="col" class="text-center">Merchant Location</th> -->
+                <th scope="col" class="text-center">Serial Number</th>
                 <th scope="col" class="text-center">Version</th>
                 <th scope="col" class="text-center">App Name</th>
                 <th scope="col" class="text-center">Agent Name</th>
@@ -119,6 +127,7 @@
                 </td>
                 <td class="text-center">{{ terminal.terminalId }}</td>
                 <td class="text-center">{{ terminal.merchantId }}</td>
+                <td class="text-center">{{ terminal.serialNo }}</td>
                 <td class="text-center">{{ terminal.appVersion }}</td>
                 <td class="text-center">{{ terminal.appName }}</td>
                 <td class="text-center">{{ terminal.agentName || "" }}</td>
@@ -263,6 +272,9 @@ export default {
       if (this.selectedMerchant !== "")
         this.tmsMerchantId = this.selectedMerchant._id || "";
     },
+    clear(){
+        Object.assign(this.$data, this.$options.data.call(this))
+    }
   },
   mounted() {
     this.getMerchants();
