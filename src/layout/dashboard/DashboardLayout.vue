@@ -7,8 +7,8 @@
           name="Transactions"
           icon="ti-exchange-vertical"
         />
-
-        <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
+<!-- 
+        <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" /> -->
         
         <sidebar-link
           to="/dashboard/institutions"

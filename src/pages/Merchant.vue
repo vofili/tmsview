@@ -195,4 +195,7 @@ th {
 #list {
     list-style-type: none;
 }
+tbody {
+  background: #fff !important;
+}
 </style>

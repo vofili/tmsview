@@ -10,7 +10,7 @@
               <option value="debit">Debit</option>
             </select>
           </div>
-          <div class="col-auto mt-2">
+          <div class="col-auto mt-2" v-if="auth.user.userType === 'super-admin'">
             <label>Terminal Id</label>
             <div class="input-group mb-2">
               <input
@@ -22,7 +22,7 @@
               />
             </div>
           </div>
-          <div class="col-auto mt-2">
+          <div class="col-auto mt-2" v-if="auth.user.userType === 'super-admin'">
             <label>Wallet Id</label>
             <div class="input-group mb-2">
               <input
@@ -159,6 +159,7 @@ import axios from "axios";
 import moment from "moment";
 import fileDownload from "js-file-download"
 import { convertArrayToCSV } from'convert-array-to-csv';
+import { mapState } from "vuex"
 export default {
   components: {},
   data() {
@@ -186,6 +187,9 @@ export default {
       startDate: moment().format('YYYY-MM-DD'),
       endDate: moment().format('YYYY-MM-DD')
     };
+  },
+  computed: {
+    ...mapState(["auth"])
   },
   methods: {
     async refresh(mode) {
@@ -278,5 +282,8 @@ th {
 }
 .spinner-grow {
   position: fixed;
+}
+tbody {
+  background: #fff !important;
 }
 </style>

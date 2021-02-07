@@ -74,7 +74,7 @@
             class="btn btn-primary mb-2 mt-4"
             @click="refresh('filter')"
           >
-            Search
+            Refresh
           </button>
         </div>
         <div class="col-auto mt-2">
@@ -293,6 +293,9 @@ th {
 }
 #list {
   list-style-type: none;
+}
+tbody {
+  background: #fff !important;
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

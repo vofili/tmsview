@@ -11,7 +11,7 @@
               <option value="pending">Pending</option>
             </select>
           </div>
-          <div class="col-auto mt-2">
+          <div class="col-auto mt-2" v-if="auth.user.userType === 'super-admin'">
             <label>Terminal Id</label>
             <div class="input-group mb-2">
               <input
@@ -101,6 +101,7 @@
                 <th scope="col" class="text-center">Terminal Id</th>
                 <th scope="col" class="text-center">Card Number</th>
                 <th scope="col" class="text-center">Stan</th>
+                <th scope="col" class="text-center">Merchant Id</th>
                 <th scope="col" class="text-center">Amount</th>
                 <th scope="col" class="text-center">Location</th>
                 <!-- <th scope="col"  class="text-center">Status</th> -->
@@ -119,6 +120,7 @@
                 <td class="text-center">{{ transaction.terminalId }}</td>
                 <td class="text-center">{{ transaction.maskedPan }}</td>
                 <td class="text-center">{{ transaction.stan }}</td>
+                <td class="text-center">{{ transaction.terminalInformation ? transaction.terminalInformation.merchantId : "" }}</td>
                 <td class="text-center">
                   {{ `₦${format.format(transaction.amount.toFixed(2) / 100)}` }}
                 </td>
@@ -179,6 +181,7 @@ import axios from "axios";
 import moment from "moment";
 import fileDownload from "js-file-download"
 import { convertArrayToCSV } from'convert-array-to-csv';
+import { mapActions, mapState }  from "vuex"
 export default {
   components: {},
   data() {
@@ -207,7 +210,11 @@ export default {
       endDate: moment().format('YYYY-MM-DD')
     };
   },
+  computed: {
+    ...mapState(["auth"])
+  },
   methods: {
+    ...mapActions(["setNotification" ]),
     async refresh(mode) {
       try {
         this.loading = true;
@@ -248,10 +255,13 @@ export default {
           this.prevPage = prevPage;
           this.nextPage = nextPage;
         }
-      } catch (err) {
-        console.log(err);
-        this.error = true;
-        this.errorMsg = "Unable to Fetch Transactions";
+      } catch (error) {
+        if(error.response && error.response.data){
+          const { message } = error.response.data;
+          this.setNotification({ type: "danger", message });
+        }else{
+          this.setNotification({ type: "danger", message: "Unable to Fetch Transactions" });
+        }
       }
       this.loading = false;
     },
@@ -282,10 +292,13 @@ export default {
       this.prevPage = prevPage;
       this.nextPage = nextPage;
     
-    } catch (err) {
-      console.log(err);
-      this.error = true;
-      this.errorMsg = "Unable to Fetch Transactions";
+    } catch (error) {
+       if(error.response && error.response.data){
+          const { message } = error.response.data;
+          this.setNotification({ type: "danger", message });
+        }else{
+          this.setNotification({ type: "danger", message: "Unable to Fetch Transactions" });
+        }
     }
     this.loading = false;
   },
@@ -300,5 +313,8 @@ th {
 }
 .spinner-grow {
   position: fixed;
+}
+tbody {
+  background: #fff !important;
 }
 </style>

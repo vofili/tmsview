@@ -32,17 +32,16 @@
             <div class="col-md-4">
               <fg-input
                 type="text"
-                label="Agent Name"
-                :disabled="true"
-                placeholder="Agent Name"
-                v-model="terminal.agentName"
+                label="Serial Numbr"
+                placeholder="Serial Number"
+                v-model="terminal.serialNo"
               >
               </fg-input>
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-4">
               <fg-input
                 type="text"
                 label="Merchant Name"
@@ -59,6 +58,16 @@
                 placeholder="Merchant Id"
                 :disabled="true"
                 v-model="terminal.merchantId"
+              >
+              </fg-input>
+            </div>
+             <div class="col-md-4">
+              <fg-input
+                type="text"
+                label="Agent Name"
+                :disabled="true"
+                placeholder="Agent Name"
+                v-model="terminal.agentName"
               >
               </fg-input>
             </div>
@@ -118,6 +127,29 @@
             </div>
           </div>
 
+          <div class="row">
+            <!-- <div class="col-md-4">
+              <fg-input
+                type="text"
+                label="Merchant Id"
+                placeholder="Merchant Id"
+                :disabled="true"
+                v-model="terminal.merchantId"
+              >
+              </fg-input>
+            </div>
+             <div class="col-md-4">
+              <fg-input
+                type="text"
+                label="Agent Name"
+                :disabled="true"
+                placeholder="Agent Name"
+                v-model="terminal.agentName"
+              >
+              </fg-input>
+            </div> -->
+          </div>
+
           <h4>Configuration Panel</h4>
 
         <div class="p-4">
@@ -162,6 +194,7 @@ export default {
         terminalId: "",
         merchantId: "",
         agentId: "",
+        serialNo: "",
         agentName: "",
         appVersion: "",
         currentVersion: "",

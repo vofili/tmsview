@@ -80,14 +80,14 @@
         </div>
 
          <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-4">
             <fg-input type="number"
                         label="Curerncy Code"
                       placeholder="Currency Code"
                       v-model="config.currencyCode">
             </fg-input>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
 
             <fg-input type="number"
                       label="Country Code"
@@ -95,6 +95,15 @@
                       v-model="config.countryCode">
             </fg-input>
           </div>
+          <div class="col-md-4">
+              <fg-input
+                type="text"
+                label="Terminal Capability"
+                placeholder="Terminal Capability"
+                v-model="config.terminalCapability"
+              >
+              </fg-input>
+            </div>
         </div>
 
         <h4>Configuration Panel</h4>
@@ -154,6 +163,7 @@ export default {
         nibbsEnv: "",
         nibbsKey: "",
         posDataCode: "",
+        terminalCapability: "",
         contactlessCvmLimit: "",
         contactlessTransLimit: "",
         processorMerchantLocation: "",
