@@ -3,46 +3,60 @@
     <div class="row">
       <div class="col-md-6 d-flex justify-content-center align-items-center">
         <div class="container">
-          <div class="d-none d-md-block d-lg-block d-xl-block">           
+          <div class="d-none d-md-block d-lg-block d-xl-block">
             <img :src="image" alt="Image" class="mt-5 img-fluid" />
           </div>
-          <h4 class="text-center">TERMINAL MANAGEMENT SYSTEM</h4>
+          <h4 class="text-center">TRANSWITH TERMINAL MANAGEMENT SYSTEM</h4>
         </div>
       </div>
       <div class="col-md-6 d-flex justify-content-center align-items-center">
-        <card class="card mt-5 border w-75" title="Login">
-          <form @submit.prevent>
-            <div class="row">
-              <div class="col-md-12 p-2">
-                <input
-                  type="email"
-                  class="form-control border"
-                  label="Username"
-                  placeholder="Email"
-                  v-model="user.email"
-                />
-              </div>
+        <div class="left-contents">
+          <div class="d-flex justify-content-center align-items-center">
+            <img
+              src="../assets/img/transwith-white-removebg.png"
+              class="img-fluid"
+            />
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <card class="card mt-5 border w-75" title="Login">
+              <form @submit.prevent>
+                <div class="row">
+                  <div class="col-md-12 p-2">
+                    <input
+                      type="email"
+                      class="form-control border"
+                      label="Username"
+                      placeholder="Email"
+                      v-model="user.email"
+                    />
+                  </div>
 
-              <div class="col-md-12 p-2">
-                <input
-                  type="password"
-                  class="form-control border"
-                  label="Password"
-                  placeholder="Password"
-                  v-model="user.password"
-                />
-              </div>
-            </div>
+                  <div class="col-md-12 p-2">
+                    <input
+                      type="password"
+                      class="form-control border"
+                      label="Password"
+                      placeholder="Password"
+                      v-model="user.password"
+                    />
+                  </div>
+                </div>
 
-            <div class="text-center">
-              <p-button type="info" round @click.native.prevent="loginUser">
-                <div  class="spinner-grow" role="status" v-if="loading.show === true"></div>
-                Login
-              </p-button>
-            </div>
-            <div class="clearfix"></div>
-          </form>
-        </card>
+                <div class="text-center">
+                  <p-button type="info" round @click.native.prevent="loginUser">
+                    <div
+                      class="spinner-grow"
+                      role="status"
+                      v-if="loading.show === true"
+                    ></div>
+                    Login
+                  </p-button>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </card>
+          </div>
+        </div>
       </div>
     </div>
   </div>

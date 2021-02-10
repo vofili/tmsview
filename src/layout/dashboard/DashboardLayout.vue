@@ -52,6 +52,13 @@
         />
 
         <sidebar-link
+          to="/dashboard/charges"
+          name="Manage Charges"
+          icon="ti-credit-card"
+          v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
           to="/dashboard/create-user"
           name="Create User"
           icon="ti-plus"

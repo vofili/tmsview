@@ -29,6 +29,7 @@ import Institutions from "@/pages/Institutions.vue"
 import EditInstitution from "@/pages/EditInstitution.vue"
 import TerminalConfig from "@/pages/TerminalConfig"
 import RemoteDownload from "@/pages/RemoteDownload.vue"
+import Charges from "@/pages/Charges.vue"
 
 const routes = [
   {
@@ -80,6 +81,11 @@ const routes = [
         path: "notifications",
         name: "notifications",
         component: Notifications
+      },
+      {
+        path: "charges",
+        name: "Charges",
+        component: Charges
       },
       {
         path: "create-user",

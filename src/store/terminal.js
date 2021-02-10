@@ -5,7 +5,10 @@ const url = process.env.VUE_APP_API_URL;
 
 export default {
   state: {
-    terminals: []
+    terminals: [],
+    charges: {
+      bands: {}
+    }
   },
   actions: {
     createTerminal({ commit }, data) {
@@ -171,6 +174,48 @@ export default {
           commit("setLoading", false);
         });
     },
+    saveCharges({ commit, dispatch }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/terminal/save-charges`, data)
+        .then((res) => {
+          const { message } = res.data;
+          commit("setNotification", { type: "success", message });
+          commit("setLoading", false);
+          dispatch("getCharges");
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    getCharges({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .get(`${url}/terminal/charges/get`)
+        .then((res) => {
+          const { message, charges } = res.data;
+          commit("setNotification", { type: "success", message });
+          commit("setCharges", charges)
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
   },
   mutations: {
     setUser(state, user) {
@@ -179,5 +224,8 @@ export default {
     clearUser(state) {
       state.user = null;
     },
+    setCharges(state, charges){
+      state.charges = charges
+    }
   },
 };

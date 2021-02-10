@@ -94,7 +94,7 @@
       <card class="card-plain">
         <div class="table-full-width table-responsive">
           <table class="table">
-            <thead class="thead-dark">
+            <thead class="tms-dark">
               <tr>
                 <th scope="col" class="text-center">S/N</th>
                 <th scope="col" class="text-center">Transaction Type</th>
@@ -316,5 +316,9 @@ th {
 }
 tbody {
   background: #fff !important;
+}
+.tms-dark {
+  background-color: #333F48;
+  color: #fff;
 }
 </style>

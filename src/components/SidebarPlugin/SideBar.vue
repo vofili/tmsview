@@ -9,9 +9,10 @@
     <!-- -->
     <div class="sidebar-wrapper" id="style-3">
       <div class="logo">
-        <a href="#" class="simple-text">
+        <!-- <a href="#" class="simple-text">
           {{title}}
-        </a>
+        </a> -->
+        <img src="../../assets/img/transwith-black-removebg.png" class="img-fluid" />
       </div>
       <slot>
 
