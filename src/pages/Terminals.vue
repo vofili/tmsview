@@ -181,6 +181,8 @@ export default {
     async refresh(mode) {
       try {
         this.loading = true;
+        this.errorMsg = "";
+        this.error = false;
         let payload = { page: this.page, terminalId: this.terminalId, merchantId: this.merchantId, serialNo: this.serialNo, agentId: this.agentId };
         switch (mode) {
           case "next":

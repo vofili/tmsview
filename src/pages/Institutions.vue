@@ -1,5 +1,63 @@
 <template>
   <div class="row transaction">
+    <div class="form-row align-items-center">
+      <div class="col-auto mt-2">
+        <label>Institution Name</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="Institution Name"
+            v-model="institutionName"
+          />
+        </div>
+      </div>
+      <div class="col-auto mt-2">
+        <label>Wallet Id</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="walletId"
+            v-model="walletId"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto mt-2">
+        <label>Email</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="Email"
+            v-model="email"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto mt-2">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('filter')"
+        >
+          Filter
+        </button>
+      </div>
+      <!-- <div class="col-auto mt-2">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('download')"
+        >
+          Download
+        </button>
+      </div> -->
+    </div>
     <div  class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
@@ -105,13 +163,18 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      institutionName: "",
+      email: "",
+      walletId: "",
     };
   },
   methods: {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page };
+        this.errorMsg = "";
+        this.error = false;
+        let payload = { page: this.page, institutionName: this.institutionName, email: this.email, walletId: this.walletId };
         switch (mode) {
           case "next":
             payload = { page: this.nextPage };

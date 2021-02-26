@@ -225,7 +225,9 @@ export default {
       state.user = null;
     },
     setCharges(state, charges){
-      state.charges = charges
+      if(charges){        
+        state.charges = charges
+      }
     }
   },
 };

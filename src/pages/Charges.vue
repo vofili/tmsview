@@ -143,7 +143,8 @@ export default {
     ]),
     submit() {
       this.$confirm("Save Charges?").then(() => {
-        this.saveCharges(this.charges);
+        const data = { ...this.terminal.charges.bands, ...this.terminal.charges }
+        this.saveCharges(data);
       });
     },
   },

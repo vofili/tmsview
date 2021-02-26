@@ -1,14 +1,88 @@
 <template>
   <div class="row transaction">
-    <div  class="spinner-grow" role="status" v-if="loading === true"></div>
+    <div class="form-row align-items-center">
+      <div class="col-auto mt-2">
+        <label>Merchant Name</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="Merchant Name"
+            v-model="merchantName"
+          />
+        </div>
+      </div>
+      <div class="col-auto mt-2">
+        <label>Wallet Id</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="walletId"
+            v-model="walletId"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto mt-2">
+        <label>Institution</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="institution"
+            v-model="institution"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto mt-2">
+        <label>Email</label>
+        <div class="input-group mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="inlineFormInputGroup"
+            placeholder="Email"
+            v-model="email"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto mt-2">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('filter')"
+        >
+          Filter
+        </button>
+      </div>
+      <!-- <div class="col-auto mt-2">
+        <button
+          type="submit"
+          class="btn btn-primary mb-2 mt-4"
+          @click="refresh('download')"
+        >
+          Download
+        </button>
+      </div> -->
+    </div>
+    <div class="spinner-grow" role="status" v-if="loading === true"></div>
     <div class="alert alert-danger" role="alert" v-if="error === true">
       {{ errorMsg }}
     </div>
     <!-- <h4>Transactions</h4> -->
     <div class="p-4 col-12">
-      <button class="btn btn-info m-2" @click="refresh('refresh')">Refresh</button>
-      <router-link class="btn btn-info m-2"  :to="`/dashboard/create-merchant`">
-        Add Merchant</router-link>
+      <button class="btn btn-info m-2" @click="refresh('refresh')">
+        Refresh
+      </button>
+      <router-link class="btn btn-info m-2" :to="`/dashboard/create-merchant`">
+        Add Merchant</router-link
+      >
     </div>
 
     <div class="col-12">
@@ -31,14 +105,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(merchant, index) in merchants"
-                :key="merchant._id"
-              >
+              <tr v-for="(merchant, index) in merchants" :key="merchant._id">
                 <th class="text-center">{{ index + 1 }}</th>
                 <td class="text-center">{{ merchant.merchantName }}</td>
                 <td class="text-center">{{ merchant.companyName }}</td>
-                <td class="text-center">{{ merchant.institutionName || 'NULL' }}</td>
+                <td class="text-center">
+                  {{ merchant.institutionName || "NULL" }}
+                </td>
                 <td class="text-center">{{ merchant.email }}</td>
                 <td class="text-center">{{ merchant.walletId }}</td>
                 <td class="text-center">{{ merchant.phoneNumber }}</td>
@@ -47,11 +120,17 @@
                 <td class="text-center">{{ merchant.country }}</td>
                 <td class="text-center">
                   <drop-down class="nav-item" title="Options" id="list">
-                    <div class="p-2">                        
-                        <router-link :to="`/dashboard/merchant/${merchant._id}`"> View Merchant </router-link>
+                    <div class="p-2">
+                      <router-link :to="`/dashboard/merchant/${merchant._id}`">
+                        View Merchant
+                      </router-link>
                     </div>
                     <div class="p-2">
-                        <router-link :to="`/dashboard/merchant/${merchant._id}/agents`"> View Agents </router-link>
+                      <router-link
+                        :to="`/dashboard/merchant/${merchant._id}/agents`"
+                      >
+                        View Agents
+                      </router-link>
                     </div>
                   </drop-down>
                 </td>
@@ -108,19 +187,25 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      merchantName: "",
+      institution: "",
+      email: "",
+      walletId: "",
     };
   },
   methods: {
     async refresh(mode) {
       try {
+        this.errorMsg = "";
+        this.error = false;
         this.loading = true;
-        let payload = { page: this.page };
+        let payload = { page: this.page, merchantName: this.merchantName, institution: this.institution, email: this.email, walletId: this.walletId };
         switch (mode) {
           case "next":
-            payload = { page: this.nextPage };
+            payload = {...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = { page: this.prevPage };
+            payload = {...payload, page: this.prevPage };
             break;
         }
         const res = await axios.post(
@@ -172,7 +257,6 @@ export default {
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
-    
     } catch (err) {
       console.log(err);
       this.error = true;
@@ -193,7 +277,7 @@ th {
   position: fixed;
 }
 #list {
-    list-style-type: none;
+  list-style-type: none;
 }
 tbody {
   background: #fff !important;
