@@ -79,9 +79,15 @@
         </div>
         <div class="col-auto mt-2">
           <button
+            type="submit"
             class="btn btn-primary mb-2 mt-4"
-            @click="clear"
+            @click="refresh('download')"
           >
+            Download
+          </button>
+        </div>
+        <div class="col-auto mt-2">
+          <button class="btn btn-primary mb-2 mt-4" @click="clear">
             Clear Form
           </button>
         </div>
@@ -168,6 +174,8 @@ import axios from "axios";
 import moment from "moment";
 import { mapState, mapActions } from "vuex";
 import Multiselect from "vue-multiselect";
+import fileDownload from "js-file-download";
+import { convertArrayToCSV } from "convert-array-to-csv";
 export default {
   components: {
     Multiselect,
@@ -204,7 +212,7 @@ export default {
     ...mapState(["utils", "loading"]),
   },
   methods: {
-    ...mapActions(["getMerchants", "setNotification", "scheduleDownloads",  "setLoading"]),
+    ...mapActions(["getMerchants", "setNotification", "setLoading"]),
     async refresh(mode) {
       try {
         this.setLoading(true);
@@ -221,25 +229,33 @@ export default {
           case "previous":
             payload = { ...payload, page: this.prevPage };
             break;
+          case "download":
+            payload = { ...payload, download: true };
+            break;
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/terminals/get-upgrade-list`,
           payload
         );
-        const {
-          docs,
-          hasNextPage,
-          hasPrevPage,
-          totalPages,
-          prevPage,
-          nextPage,
-        } = res.data.terminals;
-        this.terminals = docs;
-        this.hasPrevPage = hasPrevPage;
-        this.hasNextPage = hasNextPage;
-        this.totalPages = totalPages;
-        this.prevPage = prevPage;
-        this.nextPage = nextPage;
+        if (mode === "download") {
+          const csvTran = convertArrayToCSV(res.data.terminals);
+          fileDownload(csvTran, "terminalUpgrades.csv");
+        } else {
+          const {
+            docs,
+            hasNextPage,
+            hasPrevPage,
+            totalPages,
+            prevPage,
+            nextPage,
+          } = res.data.terminals;
+          this.terminals = docs;
+          this.hasPrevPage = hasPrevPage;
+          this.hasNextPage = hasNextPage;
+          this.totalPages = totalPages;
+          this.prevPage = prevPage;
+          this.nextPage = nextPage;
+        }
       } catch (err) {
         console.log(err);
         this.error = true;
@@ -258,23 +274,45 @@ export default {
       return `${merchantName}, ${state}, ${country}`;
     },
     schedule() {
-      this.$confirm("Upgrade Terminals ?").then(() => {
+      this.$confirm("Upgrade Terminals ?").then(async () => {
         const terminals = this.terminals.map((item) => item.terminalId);
         const formData = new FormData();
         formData.append("app", this.file);
         formData.append("terminals", JSON.stringify(terminals));
         formData.append("version", this.version);
         console.log(formData.get("terminals"));
-        this.scheduleDownloads(formData);
+        await this.scheduleDownloads(formData);
       });
+    },
+    async scheduleDownloads(data) {
+      this.setLoading(true);
+      try {
+        const res = await axios.post(`${process.env.VUE_APP_API_URL}/terminal/schedule-downloads`, data);
+        const { message } = res.data;
+        this.setNotification({ type: "success", message });
+        this.refresh("")        
+      } catch (err) {
+        if(err.response){
+          const { message, errors } = err.response.data;
+          this.setNotification({ type: "danger", message });
+          if (errors) {
+            Object.values(errors).forEach((element) => {
+              this.setNotification({ type: "danger", message: JSON.stringify(element)});
+            });
+          }
+        }else{
+          this.setNotification({ type: "danger", message: err });
+        }
+      }
+      this.setLoading(false);
     },
     setMerchant() {
       if (this.selectedMerchant !== "")
         this.tmsMerchantId = this.selectedMerchant._id || "";
     },
-    clear(){
-        Object.assign(this.$data, this.$options.data.call(this))
-    }
+    clear() {
+      Object.assign(this.$data, this.$options.data.call(this));
+    },
   },
   mounted() {
     this.getMerchants();

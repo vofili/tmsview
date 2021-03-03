@@ -1,5 +1,22 @@
 <template>
-  <div class="row transaction">
+  <div class="transaction">
+    <div class="row">
+      <div class="col-md-6 col-xl-3" v-for="stats in statsCards" :key="stats.title">
+        <stats-card>
+          <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
+            <i :class="stats.icon"></i>
+          </div>
+          <div class="numbers" slot="content">
+            <p>{{stats.title}}</p>
+            {{stats.value}}
+          </div>
+          <div class="stats" slot="footer">
+            <i :class="stats.footerIcon"></i> {{stats.footerText}}
+          </div>
+        </stats-card>
+      </div>
+    </div>
+    <div class="row">
     <div class="col-12 d-flex align-items-center">
         <div class="form-row align-items-center">
           <div class="col-auto">
@@ -126,9 +143,9 @@
                 </td>
                 <td class="text-center">
                   {{
-                    transaction.location
+                    typeTransaction(transaction.location) === "object" && transaction.location
                       ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
-                      : "NULL"
+                      : transaction.location || "Unavailable"
                   }}
                 </td>
                 
@@ -175,6 +192,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 <script>
 import axios from "axios";
@@ -182,10 +200,39 @@ import moment from "moment";
 import fileDownload from "js-file-download"
 import { convertArrayToCSV } from'convert-array-to-csv';
 import { mapActions, mapState }  from "vuex"
+import { StatsCard, ChartCard } from "@/components/index";
 export default {
-  components: {},
+  components: {
+    StatsCard
+  },
   data() {
     return {
+      statsCards: [
+        {
+          type: "warning",
+          icon: "ti-server",
+          title: "Total Transactions",
+          value: "₦0",
+          footerText: "All Trasactions",
+          footerIcon: "ti-reload"
+        },
+        {
+          type: "primary",
+          icon: "ti-wallet",
+          title: "Successful",
+          value: "₦0",
+          footerText: "Successful Transactions",
+          footerIcon: "ti-reload"
+        },
+        {
+          type: "danger",
+          icon: "ti-pulse",
+          title: "Failed",
+          value: "₦0",
+          footerText: "Failed Transactions",
+          footerIcon: "ti-reload"
+        }
+      ],
       error: false,
       transactions: [],
       errorMsg: "",
@@ -215,6 +262,10 @@ export default {
   },
   methods: {
     ...mapActions(["setNotification" ]),
+    typeTransaction(ts){
+      console.log(typeof ts)
+      return typeof ts
+    },
     async refresh(mode) {
       try {
         this.loading = true;
@@ -254,6 +305,10 @@ export default {
           this.totalPages = totalPages;
           this.prevPage = prevPage;
           this.nextPage = nextPage;
+          const { failed, successful, total } = res.data.summary
+          this.statsCards[0].value = `₦${total.toFixed(2) / 100}`
+          this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`
+          this.statsCards[2].value = `₦${failed.toFixed(2) / 100}`
         }
       } catch (error) {
         if(error.response && error.response.data){
