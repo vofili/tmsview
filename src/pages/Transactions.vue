@@ -1,23 +1,31 @@
 <template>
   <div class="transaction">
     <div class="row">
-      <div class="col-md-6 col-xl-3" v-for="stats in statsCards" :key="stats.title">
+      <div
+        class="col-md-6 col-xl-3"
+        v-for="stats in statsCards"
+        :key="stats.title"
+      >
         <stats-card>
-          <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
+          <div
+            class="icon-big text-center"
+            :class="`icon-${stats.type}`"
+            slot="header"
+          >
             <i :class="stats.icon"></i>
           </div>
           <div class="numbers" slot="content">
-            <p>{{stats.title}}</p>
-            {{stats.value}}
+            <p>{{ stats.title }}</p>
+            {{ stats.value }}
           </div>
           <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{stats.footerText}}
+            <i :class="stats.footerIcon"></i> {{ stats.footerText }}
           </div>
         </stats-card>
       </div>
     </div>
     <div class="row">
-    <div class="col-12 d-flex align-items-center">
+      <div class="col-12 d-flex align-items-center">
         <div class="form-row align-items-center">
           <div class="col-auto">
             <label for="inlineFormInput">Status</label>
@@ -28,7 +36,10 @@
               <option value="pending">Pending</option>
             </select>
           </div>
-          <div class="col-auto mt-2" v-if="auth.user.userType === 'super-admin'">
+          <div
+            class="col-auto mt-2"
+            v-if="auth.user.userType === 'super-admin'"
+          >
             <label>Terminal Id</label>
             <div class="input-group mb-2">
               <input
@@ -97,124 +108,139 @@
             </button>
           </div>
         </div>
-    </div>
-    <div  class="spinner-grow" role="status" v-if="loading === true"></div>
-    <div class="alert alert-danger" role="alert" v-if="error === true">
-      {{ errorMsg }}
-    </div>
-    <!-- <h4>Transactions</h4> -->
-    <div class="p-4 col-12">
-      <button class="btn btn-info" @click="refresh('refresh')">Refresh</button>
-    </div>
+      </div>
+      <div class="spinner-grow" role="status" v-if="loading === true"></div>
+      <div class="alert alert-danger" role="alert" v-if="error === true">
+        {{ errorMsg }}
+      </div>
+      <!-- <h4>Transactions</h4> -->
+      <div class="p-4 col-12">
+        <button class="btn btn-info" @click="refresh('refresh')">
+          Refresh
+        </button>
+      </div>
 
-    <div class="col-12">
-      <card class="card-plain">
-        <div class="table-full-width table-responsive">
-          <table class="table">
-            <thead class="tms-dark">
-              <tr>
-                <th scope="col" class="text-center">S/N</th>
-                <th scope="col" class="text-center">Transaction Type</th>
-                <th scope="col" class="text-center">Terminal Id</th>
-                <th scope="col" class="text-center">Card Number</th>
-                <th scope="col" class="text-center">Stan</th>
-                <th scope="col" class="text-center">Merchant Id</th>
-                <th scope="col" class="text-center">Amount</th>
-                <th scope="col" class="text-center">Location</th>
-                <!-- <th scope="col"  class="text-center">Status</th> -->
-                <th scope="col" class="text-center">Response Code</th>
-                <th scope="col" class="text-center">Message</th>
-                <th scope="col" class="text-center">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(transaction, index) in transactions"
-                :key="transaction._id"
-              >
-                <th class="text-center">{{ index + 1 }}</th>
-                <td class="text-center">{{ transaction.product }}</td>
-                <td class="text-center">{{ transaction.terminalId }}</td>
-                <td class="text-center">{{ transaction.maskedPan }}</td>
-                <td class="text-center">{{ transaction.stan }}</td>
-                <td class="text-center">{{ transaction.terminalInformation ? transaction.terminalInformation.merchantId : "" }}</td>
-                <td class="text-center">
-                  {{ `₦${format.format(transaction.amount.toFixed(2) / 100)}` }}
-                </td>
-                <td class="text-center">
-                  {{
-                    typeTransaction(transaction.location) === "object" && transaction.location
-                      ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
-                      : transaction.location || "Unavailable"
-                  }}
-                </td>
-                
-                <td class="text-center">
-                  {{
-                    transaction.response
-                      ? transaction.response.responseCode
-                      : ""
-                  }}
-                </td>
-                <td class="text-center">
-                  {{
-                    transaction.response ? transaction.response.description : ""
-                  }}
-                </td>
-                <td class="text-center">
-                  {{ moment(transaction.createdAt).format("Y-MM-D h:mm:ss a") }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="col-12">
+        <card class="card-plain">
+          <div class="table-full-width table-responsive">
+            <table class="table">
+              <thead class="tms-dark">
+                <tr>
+                  <th scope="col" class="text-center">S/N</th>
+                  <th scope="col" class="text-center">Transaction Type</th>
+                  <th scope="col" class="text-center">Terminal Id</th>
+                  <th scope="col" class="text-center">Card Number</th>
+                  <th scope="col" class="text-center">Stan</th>
+                  <th scope="col" class="text-center">Merchant Id</th>
+                  <th scope="col" class="text-center">Amount</th>
+                  <th scope="col" class="text-center">Location</th>
+                  <!-- <th scope="col"  class="text-center">Status</th> -->
+                  <th scope="col" class="text-center">Response Code</th>
+                  <th scope="col" class="text-center">Message</th>
+                  <th scope="col" class="text-center">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(transaction, index) in transactions"
+                  :key="transaction._id"
+                >
+                  <th class="text-center">{{ index + 1 }}</th>
+                  <td class="text-center">{{ transaction.product }}</td>
+                  <td class="text-center">{{ transaction.terminalId }}</td>
+                  <td class="text-center">{{ transaction.maskedPan }}</td>
+                  <td class="text-center">{{ transaction.stan }}</td>
+                  <td class="text-center">
+                    {{
+                      transaction.terminalInformation
+                        ? transaction.terminalInformation.merchantId
+                        : ""
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      `₦${format.format(transaction.amount.toFixed(2) / 100)}`
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      typeTransaction(transaction.location) === "object" &&
+                      transaction.location
+                        ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
+                        : transaction.location || "Unavailable"
+                    }}
+                  </td>
+
+                  <td class="text-center">
+                    {{
+                      transaction.response
+                        ? transaction.response.responseCode
+                        : ""
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      transaction.response
+                        ? transaction.response.description
+                        : ""
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      moment(transaction.createdAt).format("Y-MM-D h:mm:ss a")
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </card>
+      </div>
+
+      <div class="mt-2 d-flex justify-content-end align-items-center">
+        <div class="p-2" v-if="hasPrevPage === true">
+          <button
+            type="submit"
+            class="btn btn-primary mb-2 mt-4"
+            @click="refresh('previous')"
+          >
+            Previous Page
+          </button>
         </div>
-      </card>
-    </div>
-
-    <div class="mt-2 d-flex justify-content-end align-items-center">
-      <div class="p-2" v-if="hasPrevPage === true">
-        <button
-          type="submit"
-          class="btn btn-primary mb-2 mt-4"
-          @click="refresh('previous')"
-        >
-          Previous Page
-        </button>
-      </div>
-      <div class="p-2" v-if="hasNextPage === true">
-        <button
-          type="submit"
-          class="btn btn-primary mb-2 mt-4"
-          @click="refresh('next')"
-        >
-          Next Page
-        </button>
+        <div class="p-2" v-if="hasNextPage === true">
+          <button
+            type="submit"
+            class="btn btn-primary mb-2 mt-4"
+            @click="refresh('next')"
+          >
+            Next Page
+          </button>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import moment from "moment";
-import fileDownload from "js-file-download"
-import { convertArrayToCSV } from'convert-array-to-csv';
-import { mapActions, mapState }  from "vuex"
+import fileDownload from "js-file-download";
+import { convertArrayToCSV } from "convert-array-to-csv";
+import { mapActions, mapState } from "vuex";
 import { StatsCard, ChartCard } from "@/components/index";
 export default {
   components: {
-    StatsCard
+    StatsCard,
   },
   data() {
     return {
       statsCards: [
         {
-          type: "warning",
-          icon: "ti-server",
+          type: "info",
+          icon: "ti-save",
           title: "Total Transactions",
           value: "₦0",
           footerText: "All Trasactions",
-          footerIcon: "ti-reload"
+          footerIcon: "ti-reload",
         },
         {
           type: "primary",
@@ -222,7 +248,15 @@ export default {
           title: "Successful",
           value: "₦0",
           footerText: "Successful Transactions",
-          footerIcon: "ti-reload"
+          footerIcon: "ti-reload",
+        },
+        {
+          type: "warning",
+          icon: "ti-server",
+          title: "Pending Transactions",
+          value: "₦0",
+          footerText: "Pending Trasactions",
+          footerIcon: "ti-reload",
         },
         {
           type: "danger",
@@ -230,8 +264,8 @@ export default {
           title: "Failed",
           value: "₦0",
           footerText: "Failed Transactions",
-          footerIcon: "ti-reload"
-        }
+          footerIcon: "ti-reload",
+        },
       ],
       error: false,
       transactions: [],
@@ -253,35 +287,39 @@ export default {
       status: "",
       terminalId: "",
       stan: "",
-      startDate: moment().format('YYYY-MM-DD'),
-      endDate: moment().format('YYYY-MM-DD')
+      startDate: moment().format("YYYY-MM-DD"),
+      endDate: moment().format("YYYY-MM-DD"),
     };
   },
   computed: {
-    ...mapState(["auth"])
+    ...mapState(["auth"]),
   },
   methods: {
-    ...mapActions(["setNotification" ]),
-    typeTransaction(ts){
-      console.log(typeof ts)
-      return typeof ts
+    ...mapActions(["setNotification"]),
+    typeTransaction(ts) {
+      return typeof ts;
     },
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page, status: this.status, terminalId: this.terminalId, stan: this.stan,
-          startDate: this.startDate, endDate: this.endDate
+        let payload = {
+          page: this.page,
+          status: this.status,
+          terminalId: this.terminalId,
+          stan: this.stan,
+          startDate: this.startDate,
+          endDate: this.endDate,
         };
         switch (mode) {
           case "next":
-            payload = {...payload, page: this.nextPage };
+            payload = { ...payload, page: this.nextPage };
             break;
           case "previous":
-            payload = {...payload, page: this.prevPage };
+            payload = { ...payload, page: this.prevPage };
             break;
           case "download":
-              payload = {...payload, download: true };
-              break;
+            payload = { ...payload, download: true };
+            break;
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/transactions/details`,
@@ -305,17 +343,21 @@ export default {
           this.totalPages = totalPages;
           this.prevPage = prevPage;
           this.nextPage = nextPage;
-          const { failed, successful, total } = res.data.summary
-          this.statsCards[0].value = `₦${total.toFixed(2) / 100}`
-          this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`
-          this.statsCards[2].value = `₦${failed.toFixed(2) / 100}`
+          const { failed, successful, total, pending } = res.data.summary;
+          this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
+          this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
+          this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
+          this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
         }
       } catch (error) {
-        if(error.response && error.response.data){
+        if (error.response && error.response.data) {
           const { message } = error.response.data;
           this.setNotification({ type: "danger", message });
-        }else{
-          this.setNotification({ type: "danger", message: "Unable to Fetch Transactions" });
+        } else {
+          this.setNotification({
+            type: "danger",
+            message: "Unable to Fetch Transactions",
+          });
         }
       }
       this.loading = false;
@@ -346,14 +388,22 @@ export default {
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
-    
+      const { failed, successful, total, pending } = res.data.summary;
+      this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
+      this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
+      this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
+      this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
     } catch (error) {
-       if(error.response && error.response.data){
-          const { message } = error.response.data;
-          this.setNotification({ type: "danger", message });
-        }else{
-          this.setNotification({ type: "danger", message: "Unable to Fetch Transactions" });
-        }
+      console.log(error)
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+        this.setNotification({ type: "danger", message });
+      } else {
+        this.setNotification({
+          type: "danger",
+          message: "Unable to Fetch Transactions",
+        });
+      }
     }
     this.loading = false;
   },
@@ -373,7 +423,7 @@ tbody {
   background: #fff !important;
 }
 .tms-dark {
-  background-color: #333F48;
+  background-color: #333f48;
   color: #fff;
 }
 </style>

@@ -83,7 +83,7 @@
             class="btn btn-primary mb-2 mt-4"
             @click="refresh('download')"
           >
-            Download
+            Export Report
           </button>
         </div>
         <div class="col-auto mt-2">

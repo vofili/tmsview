@@ -1,19 +1,27 @@
 <template>
   <div>
-
+    <div class="spinner-grow" role="status" v-if="loading.show === true"></div>
     <!--Stats cards-->
     <div class="row">
-      <div class="col-md-6 col-xl-3" v-for="stats in statsCards" :key="stats.title">
+      <div
+        class="col-md-6 col-xl-3"
+        v-for="stats in statsCards"
+        :key="stats.title"
+      >
         <stats-card>
-          <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
+          <div
+            class="icon-big text-center"
+            :class="`icon-${stats.type}`"
+            slot="header"
+          >
             <i :class="stats.icon"></i>
           </div>
           <div class="numbers" slot="content">
-            <p>{{stats.title}}</p>
-            {{stats.value}}
+            <p>{{ stats.title }}</p>
+            {{ stats.value }}
           </div>
           <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{stats.footerText}}
+            <i :class="stats.footerIcon"></i> {{ stats.footerText }}
           </div>
         </stats-card>
       </div>
@@ -21,113 +29,121 @@
 
     <!--Charts-->
     <div class="row">
-
-      <div class="col-12">
+      <div class="col-12" v-if="loading.show === false">
         <chart-card title="Users"
-                    sub-title="Total users in the System"
+                    sub-title="Transactions By Time"
                     :chart-data="usersChart.data"
                     :chart-options="usersChart.options">
           <span slot="footer">
-            <i class="ti-reload"></i> Updated 3 minutes ago
+            <i class="ti-reload"></i> Updated Today {{ moment().format('YYYY-MM-DD') }}
           </span>
           <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Click
-            <i class="fa fa-circle text-warning"></i> Click Second Time
+            <i class="fa fa-circle text-info"></i> Successful
+            <i class="fa fa-circle text-danger"></i> Pending
+            <i class="fa fa-circle text-warning"></i> Failed
           </div>
         </chart-card>
       </div>
 
-      <div class="col-md-6 col-12">
-        <chart-card title="Transaction Statistics"
-                    sub-title="Last campaign performance"
-                    :chart-data="preferencesChart.data"
-                    chart-type="Pie">
-          <span slot="footer">
-            <i class="ti-timer"></i> Campaign set 2 days ago</span>
+      <div class="col-12">
+        <chart-card
+          title="Transaction Statistics"
+          sub-title="Performance for Today"
+          :chart-data="chartData"
+          chart-type="Pie"
+          v-if="loading.show === false"
+        >
+          <span slot="footer"> <i class="ti-timer"></i>Updated Today {{ moment().format('YYYY-MM-DD') }} </span>
           <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Bounce
-            <i class="fa fa-circle text-warning"></i> Unsubscribe
+            <i class="fa fa-circle text-info"></i> Success
+            <i class="fa fa-circle text-danger"></i> Failed
+            <i class="fa fa-circle text-warning"></i> Pending
           </div>
         </chart-card>
       </div>
 
-      <div class="col-md-6 col-12">
-        <chart-card title="2020 Purchase"
-                    sub-title="All products including Taxes"
-                    :chart-data="activityChart.data"
-                    :chart-options="activityChart.options">
+      <!-- <div class="col-md-6 col-12">
+        <chart-card
+          :title="`${new Date().getFullYear()} Transactions`"
+          sub-title="All products"
+          :chart-data="activityChart.data"
+          :chart-options="activityChart.options"
+        >
           <span slot="footer">
             <i class="ti-check"></i> Data information certified
           </span>
           <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Tesla Model S
-            <i class="fa fa-circle text-warning"></i> BMW 5 Series
+            <i class="fa fa-circle text-info"></i> Success
+            <i class="fa fa-circle text-warning"></i> Failed
           </div>
         </chart-card>
-      </div>
-
+      </div> -->
     </div>
-
   </div>
 </template>
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
+import { mapState, mapActions } from "vuex";
+import axios from "axios";
 import Chartist from 'chartist';
+import moment from "moment"
 export default {
   components: {
     StatsCard,
-    ChartCard
+    ChartCard,
   },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
+      moment,
       statsCards: [
+        {
+          type: "info",
+          icon: "ti-save",
+          title: "Total Transactions",
+          value: "₦0",
+          footerText: "All Trasactions",
+          footerIcon: "ti-reload",
+        },
+        {
+          type: "primary",
+          icon: "ti-wallet",
+          title: "Successful",
+          value: "₦0",
+          footerText: "Successful Transactions",
+          footerIcon: "ti-reload",
+        },
         {
           type: "warning",
           icon: "ti-server",
-          title: "Total Transactions",
-          value: "₦5000",
-          footerText: "Updated now",
-          footerIcon: "ti-reload"
-        },
-        {
-          type: "success",
-          icon: "ti-wallet",
-          title: "Successful",
-          value: "₦3000",
-          footerText: "Last day",
-          footerIcon: "ti-calendar"
+          title: "Pending Transactions",
+          value: "₦0",
+          footerText: "Pending Trasactions",
+          footerIcon: "ti-reload",
         },
         {
           type: "danger",
           icon: "ti-pulse",
           title: "Failed",
-          value: "₦200",
-          footerText: "In the last hour",
-          footerIcon: "ti-timer"
-        }
+          value: "₦0",
+          footerText: "Failed Transactions",
+          footerIcon: "ti-reload",
+        },
       ],
       usersChart: {
         data: {
           labels: [
-            "9:00AM",
-            "12:00AM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-            "12:00PM",
-            "3:00AM",
-            "6:00AM"
+            "12:00AM - 4:00AM",
+            "4:00AM - 8:00AM",
+            "8:00AM - 12:00PM",
+            "12:00PM - 3:00PM",
+            "3:00PM - 6:00PM",
+            "6:00PM - 9:00PM",
+            "19:00PM - 11:59PM"
           ],
-          series: [
-            [287, 385, 490, 562, 594, 626, 698, 895, 952],
-            [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            [23, 113, 67, 108, 190, 239, 307, 410, 410]
-          ]
+          series: [ [], [], [] ]
         },
         options: {
           low: 0,
@@ -144,44 +160,80 @@ export default {
           showPoint: false
         }
       },
-      activityChart: {
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "Mai",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-          ],
-          series: [
-            [542, 543, 520, 680, 653, 753, 326, 434, 568, 610, 756, 895],
-            [230, 293, 380, 480, 503, 553, 600, 664, 698, 710, 736, 795]
-          ]
-        },
-        options: {
-          seriesBarDistance: 10,
-          axisX: {
-            showGrid: false
-          },
-          height: "245px"
-        }
-      },
+      // activityChart: {
+      //   data: {
+      //     labels: [
+      //       "Jan",
+      //       "Feb",
+      //       "Mar",
+      //       "Apr",
+      //       "Mai",
+      //       "Jun",
+      //       "Jul",
+      //       "Aug",
+      //       "Sep",
+      //       "Oct",
+      //       "Nov",
+      //       "Dec",
+      //     ],
+      //     series: [
+      //       [542, 543, 520, 680, 653, 753, 326, 434, 568, 610, 756, 895],
+      //       [230, 293, 380, 480, 503, 553, 600, 664, 698, 710, 736, 795],
+      //     ],
+      //   },
+      //   options: {
+      //     seriesBarDistance: 10,
+      //     axisX: {
+      //       showGrid: false,
+      //     },
+      //     height: "245px",
+      //   },
+      // },
       preferencesChart: {
         data: {
-          labels: ["62%", "32%", "6%"],
-          series: [62, 32, 6]
+          labels: ["0%", "0%", "0%"],
+          series: [0, 0, 0],
         },
-        options: {}
-      }
+        options: {},
+      },
+      chartData: {},
     };
-  }
+  },
+  computed: {
+    ...mapState(["utils", "loading"]),
+  },
+  methods: {
+    ...mapActions(["getMerchants", "setNotification", "setLoading"]),
+  },
+  async mounted() {
+    try {
+      this.setLoading(true);
+
+      const res = await axios.post(
+        `${process.env.VUE_APP_API_URL}/transaction-dashboard`
+      );
+      const { summary, chartData, seriesData  } = res.data;
+      const { failed, successful, total, pending } = summary;
+      this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
+      this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
+      this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
+      this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
+
+      this.chartData = chartData;
+      this.usersChart = seriesData
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+        this.setNotification({ type: "danger", message });
+      } else {
+        this.setNotification({
+          type: "danger",
+          message: "Unable to Fetch Transactions",
+        });
+      }
+    }
+    this.setLoading(false);
+  },
 };
 </script>
 <style>

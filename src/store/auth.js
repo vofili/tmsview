@@ -33,7 +33,7 @@ export default {
           const user = jwt.decode(token, key);
 
           commit("setUser", user);
-          router.push("/dashboard/transactions");
+          router.push("/dashboard");
 
         })
         .catch((err) => {

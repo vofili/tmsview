@@ -2,14 +2,14 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
+        <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" />
+
         <sidebar-link
           to="/dashboard/transactions"
           name="Transactions"
           icon="ti-exchange-vertical"
         />
-        
-        <!-- <sidebar-link to="/Dashboard" name="Dashboard" icon="ti-panel" /> -->
-        
+
         <sidebar-link
           to="/dashboard/institutions"
           name="Institutions"
@@ -30,7 +30,7 @@
           icon="ti-layout"
           v-if="auth.user.userType === 'super-admin'"
         />
-        
+
         <!-- <sidebar-link
           to="/dashboard/add-terminal"
           name="Add Terminal"
@@ -64,7 +64,7 @@
           icon="ti-plus"
           v-if="auth.user.userType === 'super-admin'"
         />
-        
+
         <!-- <sidebar-link
           to="/dashboard/table-list"
           name="Table List"
@@ -94,7 +94,6 @@
         /> -->
       </template>
       <mobile-menu>
-        
         <li class="divider"></li>
       </mobile-menu>
     </side-bar>
@@ -110,7 +109,7 @@
 <style lang="scss">
 </style>
 <script>
-import { mapState } from "vuex"
+import { mapState } from "vuex";
 import TopNavbar from "./TopNavbar.vue";
 // import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
@@ -123,7 +122,7 @@ export default {
     MobileMenu,
   },
   computed: {
-    ...mapState(["auth" ])
+    ...mapState(["auth"]),
   },
   methods: {
     toggleSidebar() {
@@ -140,7 +139,7 @@ export default {
 };
 </script>
 <style scoped>
-  .wrapper{
-    font-size: 12px !important;
-  }
+.wrapper {
+  font-size: 12px !important;
+}
 </style>
