@@ -27,25 +27,7 @@
       </div>
     </div>
 
-    <!--Charts-->
-    <div class="row">
-      <div class="col-12" v-if="loading.show === false">
-        <chart-card title="Users"
-                    sub-title="Transactions By Time"
-                    :chart-data="usersChart.data"
-                    :chart-options="usersChart.options">
-          <span slot="footer">
-            <i class="ti-reload"></i> Updated Today {{ moment().format('YYYY-MM-DD') }}
-          </span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Successful
-            <i class="fa fa-circle text-danger"></i> Pending
-            <i class="fa fa-circle text-warning"></i> Failed
-          </div>
-        </chart-card>
-      </div>
-
-      <div class="col-12">
+    <div class="col-12">
         <chart-card
           title="Transaction Statistics"
           sub-title="Performance for Today"
@@ -58,6 +40,24 @@
             <i class="fa fa-circle text-info"></i> Success
             <i class="fa fa-circle text-danger"></i> Failed
             <i class="fa fa-circle text-warning"></i> Pending
+          </div>
+        </chart-card>
+      </div>    
+
+    <!--Charts-->
+    <div class="row">
+      <div class="col-12" v-if="loading.show === false">
+        <chart-card title="Transactions"
+                    sub-title="Transactions for This Year"
+                    :chart-data="usersChart.data"
+                    :chart-options="usersChart.options">
+          <span slot="footer">
+            <i class="ti-reload"></i> {{ moment().year() }} Records
+          </span>
+          <div slot="legend">
+            <i class="fa fa-circle text-info"></i> All Transactions
+            <!-- <i class="fa fa-circle text-danger"></i> Pending
+            <i class="fa fa-circle text-warning"></i> Failed -->
           </div>
         </chart-card>
       </div>
@@ -103,45 +103,50 @@ export default {
           type: "info",
           icon: "ti-save",
           title: "Total Transactions",
-          value: "₦0",
-          footerText: "All Trasactions",
+          value: "0",
+          footerText: "Data for Today",
           footerIcon: "ti-reload",
         },
         {
           type: "primary",
           icon: "ti-wallet",
           title: "Successful",
-          value: "₦0",
-          footerText: "Successful Transactions",
+          value: "0",
+          footerText: "Data for Today",
           footerIcon: "ti-reload",
         },
         {
           type: "warning",
           icon: "ti-server",
           title: "Pending Transactions",
-          value: "₦0",
-          footerText: "Pending Trasactions",
+          value: "0",
+          footerText: "Data for Today",
           footerIcon: "ti-reload",
         },
         {
           type: "danger",
           icon: "ti-pulse",
           title: "Failed",
-          value: "₦0",
-          footerText: "Failed Transactions",
+          value: "0",
+          footerText: "Data for Today",
           footerIcon: "ti-reload",
         },
       ],
       usersChart: {
         data: {
           labels: [
-            "12:00AM - 4:00AM",
-            "4:00AM - 8:00AM",
-            "8:00AM - 12:00PM",
-            "12:00PM - 3:00PM",
-            "3:00PM - 6:00PM",
-            "6:00PM - 9:00PM",
-            "19:00PM - 11:59PM"
+            "Jan",
+            "Feb",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "Aug",
+            "Sept",
+            "Oct",
+            "Nov",
+            "Dec"
           ],
           series: [ [], [], [] ]
         },
@@ -214,10 +219,10 @@ export default {
       );
       const { summary, chartData, seriesData  } = res.data;
       const { failed, successful, total, pending } = summary;
-      this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
-      this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
-      this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
-      this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
+      this.statsCards[0].value = total;
+      this.statsCards[1].value = successful;
+      this.statsCards[2].value = pending;
+      this.statsCards[3].value = failed;
 
       this.chartData = chartData;
       this.usersChart = seriesData
