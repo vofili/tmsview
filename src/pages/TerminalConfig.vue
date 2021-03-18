@@ -106,29 +106,42 @@
             </div>
         </div>
 
-        <h4>Configuration Panel</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Configuration Panel</h4>
 
-        <div class="p-4">
-            <div class="row">
-                <div class="form-group form-check">
-                    <input type="checkbox" v-model="config.disableAll" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Disable All Terminals</label>
+            <div class="p-4">
+                <div class="row">
+                    <div class="form-group form-check">
+                        <input type="checkbox" v-model="config.disableAll" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Disable All Terminals</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group form-check">
+                        <input type="checkbox" v-model="config.forceConfigAll" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Force Configure All Terminals</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group form-check">
+                        <input type="checkbox" v-model="config.upgradeAll" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Upgrade All Terminals</label>
+                    </div>
                 </div>
             </div>
-
+          </div>
+          <div class="col-md-6">
+            <h4>Routes</h4>
             <div class="row">
-                <div class="form-group form-check">
-                    <input type="checkbox" v-model="config.forceConfigAll" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Force Configure All Terminals</label>
-                </div>
+              <div class="col-12">
+                <!-- <div class="border routes-input p-2" ref="editable" contenteditable @input="changeRoute"> {{ config.routes }} </div> -->
+                <textarea class="form-chontrol border" id="" cols="50" rows="10" v-model="config.routes"></textarea>
+              </div>
             </div>
-
-            <div class="row">
-                <div class="form-group form-check">
-                    <input type="checkbox" v-model="config.upgradeAll" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Upgrade All Terminals</label>
-                </div>
-            </div>
+          </div>
         </div>
 
         <div class="text-center">
@@ -171,7 +184,8 @@ export default {
         currencyCode: "",
         disableAll: false,
         forceConfigAll: false,
-        upgradeAll: false
+        upgradeAll: false,
+        routes: []
       },
     };
   },
@@ -181,8 +195,13 @@ export default {
   methods: {
     ...mapActions(["saveConfig", "setNotification", "setLoading" ]),
     submit() {
+      // console.log(this.config.routes)
       this.saveConfig(this.config)
     },
+    changeRoute(){
+      const routes = this.$refs.editable.innerText
+      this.config.routes = routes
+    }
   },
   async mounted(){
      try {
@@ -200,3 +219,9 @@ export default {
 };
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style scoped>
+  .routes-input{
+    height: 200px;
+    overflow-x: scroll;
+  }
+</style>
