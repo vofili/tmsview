@@ -220,7 +220,7 @@
                       @click="resendNotification(transaction._id)"
                       :disabled="loading"
                     >
-                      Retry
+                      Resend
                     </button>
                   </td>
                 </tr>
