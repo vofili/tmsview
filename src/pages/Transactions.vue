@@ -63,6 +63,20 @@
               />
             </div>
           </div>
+
+          <div class="col-auto mt-2">
+            <label>Reference</label>
+            <div class="input-group mb-2">
+              <input
+                type="text"
+                class="form-control"
+                id="inlineFormInputGroup"
+                placeholder="Reference"
+                v-model="reference"
+              />
+            </div>
+          </div>
+
           <div class="col-auto mt-2">
             <label>Start Date</label>
             <div class="input-group mb-2">
@@ -153,7 +167,7 @@
                   :key="transaction._id"
                 >
                   <th class="text-center">{{ index + 1 }}</th>
-                  <td class="text-center">{{ transaction.product }}</td>
+                  <td class="text-center">{{ transaction.product.toUpperCase() }}</td>
                   <td class="text-center">{{ transaction.terminalId }}</td>
                   <td class="text-center">{{ transaction.maskedPan }}</td>
                   <td class="text-center">{{ transaction.stan }}</td>
@@ -169,12 +183,8 @@
                       `₦${format.format(transaction.amount.toFixed(2) / 100)}`
                     }}
                   </td>
-                  <td class="text-center">
-                    {{
-                      transaction.reference
-                        ? transaction.reference.split("|").join("| ")
-                        : "Null"
-                    }}
+                  <td class="text-center ref">
+                    {{ transaction.reference || "Null" }}
                   </td>
                   <td class="text-center">
                     {{
@@ -319,6 +329,7 @@ export default {
       nextPage: null,
       status: "",
       terminalId: "",
+      reference: "",
       stan: "",
       startDate: moment().format("YYYY-MM-DD"),
       endDate: moment().format("YYYY-MM-DD"),
@@ -363,6 +374,7 @@ export default {
           status: this.status,
           terminalId: this.terminalId,
           stan: this.stan,
+          reference: this.reference,
           startDate: this.startDate,
           endDate: this.endDate,
         };
@@ -481,5 +493,11 @@ tbody {
 .tms-dark {
   background-color: #333f48;
   color: #fff;
+}
+.ref {
+  font-size: 8px;
+}
+button{
+  padding: 0.2rem 10px !important;
 }
 </style>
