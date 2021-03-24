@@ -133,11 +133,18 @@
                   <th scope="col" class="text-center">Stan</th>
                   <th scope="col" class="text-center">Merchant Id</th>
                   <th scope="col" class="text-center">Amount</th>
+                  <th scope="col" class="text-center">Reference</th>
                   <th scope="col" class="text-center">Location</th>
-                  <!-- <th scope="col"  class="text-center">Status</th> -->
                   <th scope="col" class="text-center">Response Code</th>
                   <th scope="col" class="text-center">Message</th>
                   <th scope="col" class="text-center">Date</th>
+                  <th
+                    scope="col"
+                    class="text-center"
+                    v-if="auth.user.userType === 'super-admin'"
+                  >
+                    Notification
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -164,7 +171,14 @@
                   </td>
                   <td class="text-center">
                     {{
-                      typeTransaction(transaction.location) === "object" &&
+                      transaction.reference
+                        ? transaction.reference.split("|").join("| ")
+                        : "Null"
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      typeof transaction.location === "object" &&
                       transaction.location
                         ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
                         : transaction.location || "Unavailable"
@@ -189,6 +203,25 @@
                     {{
                       moment(transaction.createdAt).format("Y-MM-D h:mm:ss a")
                     }}
+                  </td>
+                  <td
+                    class="text-center"
+                    v-if="auth.user.userType === 'super-admin'"
+                  >
+                    <button
+                      v-if="transaction.notification === true"
+                      class="btn btn-pimary"
+                    >
+                      Sent
+                    </button>
+                    <button
+                      v-else
+                      class="btn btn-warning"
+                      @click="resendNotification(transaction._id)"
+                      :disabled="loading"
+                    >
+                      Retry
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -296,8 +329,31 @@ export default {
   },
   methods: {
     ...mapActions(["setNotification"]),
-    typeTransaction(ts) {
-      return typeof ts;
+    async resendNotification(id){
+      this.loading = true
+      try {
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/transaction/resend-notification`, { id }
+        );
+        const { message } = res.data
+        this.setNotification({
+            type: "success",
+            message,
+        });
+        this.refresh('')
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          this.setNotification({ type: "danger", message });
+        } else {
+          console.log(error)
+          this.setNotification({
+            type: "danger",
+            message: "Unable to Send Notification",
+          });
+        }
+      }
+      this.loading = false
     },
     async refresh(mode) {
       try {
