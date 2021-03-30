@@ -30,6 +30,9 @@ import EditInstitution from "@/pages/EditInstitution.vue"
 import TerminalConfig from "@/pages/TerminalConfig"
 import RemoteDownload from "@/pages/RemoteDownload.vue"
 import Charges from "@/pages/Charges.vue"
+import ViewUsers from "@/pages/ViewUsers.vue"
+import ViewUser from "@/pages/ViewUser.vue"
+import ChangePassword from "@/pages/ChangePassword.vue"
 
 const routes = [
   {
@@ -91,6 +94,21 @@ const routes = [
         path: "create-user",
         name: "Create User",
         component: Register
+      },
+      {
+        path: "view-users",
+        name: "View Users",
+        component: ViewUsers
+      },
+      {
+        path: "user/:userId",
+        name: "View User",
+        component: ViewUser
+      },
+      {
+        path: "change-password",
+        name: "Change Password",
+        component: ChangePassword
       },
       {
         path: "create-merchant",

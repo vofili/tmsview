@@ -59,10 +59,16 @@
         />
 
         <sidebar-link
-          to="/dashboard/create-user"
-          name="Create User"
-          icon="ti-plus"
+          to="/dashboard/view-users"
+          name="View Users"
+          icon="ti-user"
           v-if="auth.user.userType === 'super-admin'"
+        />
+
+        <sidebar-link
+          to="/dashboard/change-password"
+          name="Change Password"
+          icon="ti-lock"
         />
 
         <!-- <sidebar-link

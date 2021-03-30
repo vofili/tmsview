@@ -347,6 +347,82 @@ export default {
           commit("setLoading", false);
         });
     },
+    adminChangeUserPassword({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/user/admin-change-password`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    disableUser({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/user/disable`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    enableUser({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/user/enable`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
+    changePassword({ commit }, data) {
+      commit("setLoading", true);
+      axios
+        .post(`${url}/user/change-password`, data)
+        .then((res) => {
+          commit("setNotification", { type: "success", message: res.data.message });
+          commit("setLoading", false);
+        })
+        .catch((err) => {
+          const { message, errors } = err.response.data;
+          commit("setNotification", { type: "danger", message });
+          if(errors){
+            Object.values(errors).forEach(element => {
+              commit("setNotification", { type: "danger", message: JSON.stringify(element) });
+            });
+          }
+          commit("setLoading", false);
+        });
+    },
     logout({ commit }) {
       commit("clearUser");
       localStorage.removeItem("jwtToken");
