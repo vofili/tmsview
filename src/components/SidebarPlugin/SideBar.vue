@@ -8,11 +8,11 @@
         -->
     <!-- -->
     <div class="sidebar-wrapper" id="style-3">
-      <div class="logo">
+      <div class="logo d-flex justify-content-center">
         <!-- <a href="#" class="simple-text">
           {{title}}
         </a> -->
-        <img src="../../assets/img/transwith-black-removebg.png" class="img-fluid" />
+        <img src="../../assets/img/bankly-logo.png" class="img-fluid" />
       </div>
       <slot>
 

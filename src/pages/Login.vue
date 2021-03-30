@@ -1,19 +1,11 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center">
-    <div class="row">
-      <div class="col-md-6 d-flex justify-content-center align-items-center">
-        <div class="container">
-          <div class="d-none d-md-block d-lg-block d-xl-block">
-            <img :src="image" alt="Image" class="mt-5 img-fluid" />
-          </div>
-          <h4 class="text-center">TRANSWITH TERMINAL MANAGEMENT SYSTEM</h4>
-        </div>
-      </div>
-      <div class="col-md-6 d-flex justify-content-center align-items-center">
+  <div class="row h-100">
+    <div class="col-12 my-auto p22">      
+      <div class="d-flex justify-content-center align-items-center">
         <div class="left-contents">
           <div class="d-flex justify-content-center align-items-center">
             <img
-              src="../assets/img/transwith-white-removebg.png"
+              src="../assets/img/bankly-logo.png"
               class="img-fluid"
             />
           </div>
@@ -89,5 +81,8 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
+  .p22{
+    padding-top: 15%;
+  }
 </style>
