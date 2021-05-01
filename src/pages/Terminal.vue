@@ -166,6 +166,13 @@
                     <label class="form-check-label" for="exampleCheck1">Force Upgrade Terminal</label>
                 </div>
             </div>
+
+            <div class="row">
+                  <div class="form-group form-check">
+                      <input type="checkbox" v-model="terminal.nibbsRoute" class="form-check-input">
+                      <label class="form-check-label" for="exampleCheck1">Route Terminal to Nibbs</label>
+                  </div>
+              </div>
         </div>
 
           <div class="text-center">
@@ -202,7 +209,8 @@ export default {
         state: "",
         localGovernment: "",
         forceConfig: false, 
-        forceUpgrade: false
+        forceUpgrade: false,
+        nibbsRoute: false
       },
     };
   },
