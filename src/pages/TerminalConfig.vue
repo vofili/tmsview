@@ -113,22 +113,29 @@
             <div class="p-4">
                 <div class="row">
                     <div class="form-group form-check">
-                        <input type="checkbox" v-model="config.disableAll" class="form-check-input" id="exampleCheck1">
+                        <input type="checkbox" v-model="config.disableAll" class="form-check-input">
                         <label class="form-check-label" for="exampleCheck1">Disable All Terminals</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group form-check">
-                        <input type="checkbox" v-model="config.forceConfigAll" class="form-check-input" id="exampleCheck1">
+                        <input type="checkbox" v-model="config.forceConfigAll" class="form-check-input">
                         <label class="form-check-label" for="exampleCheck1">Force Configure All Terminals</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group form-check">
-                        <input type="checkbox" v-model="config.upgradeAll" class="form-check-input" id="exampleCheck1">
+                        <input type="checkbox" v-model="config.upgradeAll" class="form-check-input">
                         <label class="form-check-label" for="exampleCheck1">Upgrade All Terminals</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group form-check">
+                        <input type="checkbox" v-model="config.allNibbsRoute" class="form-check-input">
+                        <label class="form-check-label" for="exampleCheck1">Route All to Nibbs</label>
                     </div>
                 </div>
             </div>
@@ -185,6 +192,7 @@ export default {
         disableAll: false,
         forceConfigAll: false,
         upgradeAll: false,
+        allNibbsRoute: false,
         routes: []
       },
     };
