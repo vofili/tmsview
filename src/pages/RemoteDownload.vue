@@ -275,12 +275,17 @@ export default {
     },
     schedule() {
       this.$confirm("Upgrade Terminals ?").then(async () => {
-        const terminals = this.terminals.map((item) => item.terminalId);
+        const terminalsPayload = {
+          terminalId: this.terminalId,
+          merchantId: this.merchantId,
+          tmsMerchantId: this.tmsMerchantId,
+        }
+        // this.terminals.map((item) => item.terminalId);
         const formData = new FormData();
         formData.append("app", this.file);
-        formData.append("terminals", JSON.stringify(terminals));
+        formData.append("terminalsPayload", JSON.stringify(terminalsPayload));
         formData.append("version", this.version);
-        console.log(formData.get("terminals"));
+        // console.log(formData.get("terminalsPayload"));
         await this.scheduleDownloads(formData);
       });
     },
