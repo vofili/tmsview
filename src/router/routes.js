@@ -33,6 +33,7 @@ import Charges from "@/pages/Charges.vue"
 import ViewUsers from "@/pages/ViewUsers.vue"
 import ViewUser from "@/pages/ViewUser.vue"
 import ChangePassword from "@/pages/ChangePassword.vue"
+import Logs from "@/pages/Logs.vue"
 
 const routes = [
   {
@@ -174,6 +175,11 @@ const routes = [
         path: "terminal-configuration",
         name: "Terminal Configuration",
         component: TerminalConfig
+      },
+      {
+        path: "get-logs",
+        name: "Transaction Logs",
+        component: Logs
       },
       {
         path: "icons",
