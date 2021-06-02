@@ -71,6 +71,12 @@
           icon="ti-lock"
         />
 
+        <sidebar-link
+          to="/dashboard/get-logs"
+          name="Logs"
+          icon="ti-lock"
+        />
+
         <!-- <sidebar-link
           to="/dashboard/table-list"
           name="Table List"
