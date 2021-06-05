@@ -34,6 +34,7 @@
               <option value="successful">Successful</option>
               <option value="failed">Failed</option>
               <option value="pending">Pending</option>
+              <option value="pending">Unsent Notification</option>
             </select>
           </div>
           <div
@@ -166,8 +167,10 @@
                   v-for="(transaction, index) in transactions"
                   :key="transaction._id"
                 >
-                  <th class="text-center">{{ index + 1 }}</th>
-                  <td class="text-center">{{ transaction.product.toUpperCase() }}</td>
+                  <th class="text-center">{{(limit * (page - 1) ) + (index + 1) }}</th>
+                  <td class="text-center">
+                    {{ transaction.product.toUpperCase() }}
+                  </td>
                   <td class="text-center">{{ transaction.terminalId }}</td>
                   <td class="text-center">{{ transaction.maskedPan }}</td>
                   <td class="text-center">{{ transaction.stan }}</td>
@@ -241,7 +244,7 @@
       </div>
 
       <div class="mt-2 d-flex justify-content-end align-items-center">
-        <div class="p-2" v-if="hasPrevPage === true">
+        <!-- <div class="p-2" v-if="hasPrevPage === true">
           <button
             type="submit"
             class="btn btn-primary mb-2 mt-4"
@@ -258,9 +261,29 @@
           >
             Next Page
           </button>
+        </div> -->
+        <div class="p-2">
+          <div class="btn">Total Records: {{ totalDocs }}</div>
         </div>
       </div>
     </div>
+    <!-- <div class="p-2 d-flex">
+      <div v-for="item in pageNumbers" :key="item">
+        <div class="btn m-1" @click="refresh(item)">{{ item }}</div>
+      </div>
+    </div> -->
+    <paginate
+      v-model="page"
+      :page-count="Math.ceil(totalDocs / 20)"
+      :page-range="5"
+      :margin-pages="2"
+      :click-handler="refresh"
+      :prev-text="'Prev'"
+      :next-text="'Next'"
+      :container-class="'p-2 list d-flex align-items-center h4'"
+      :page-class="'my-1 mx-4'"
+    >
+    </paginate>
   </div>
 </template>
 <script>
@@ -270,9 +293,11 @@ import fileDownload from "js-file-download";
 import { convertArrayToCSV } from "convert-array-to-csv";
 import { mapActions, mapState } from "vuex";
 import { StatsCard, ChartCard } from "@/components/index";
+import Paginate from "vuejs-paginate";
 export default {
   components: {
     StatsCard,
+    Paginate,
   },
   data() {
     return {
@@ -320,13 +345,14 @@ export default {
         maximumFractionDigits: 2,
       }),
       page: 1,
-      totalDocs: 37,
       limit: 20,
       totalPages: 0,
       hasPrevPage: false,
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      totalDocs: 0,
+      pageNumbers: [],
       status: "",
       terminalId: "",
       reference: "",
@@ -340,31 +366,32 @@ export default {
   },
   methods: {
     ...mapActions(["setNotification"]),
-    async resendNotification(id){
-      this.loading = true
+    async resendNotification(id) {
+      this.loading = true;
       try {
         const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/transaction/resend-notification`, { id }
+          `${process.env.VUE_APP_API_URL}/transaction/resend-notification`,
+          { id }
         );
-        const { message } = res.data
+        const { message } = res.data;
         this.setNotification({
-            type: "success",
-            message,
+          type: "success",
+          message,
         });
-        this.refresh('')
+        this.refresh("");
       } catch (error) {
         if (error.response && error.response.data) {
           const { message } = error.response.data;
           this.setNotification({ type: "danger", message });
         } else {
-          console.log(error)
+          console.log(error);
           this.setNotification({
             type: "danger",
             message: "Unable to Send Notification",
           });
         }
       }
-      this.loading = false
+      this.loading = false;
     },
     async refresh(mode) {
       try {
@@ -378,16 +405,20 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
         };
-        switch (mode) {
-          case "next":
-            payload = { ...payload, page: this.nextPage };
-            break;
-          case "previous":
-            payload = { ...payload, page: this.prevPage };
-            break;
-          case "download":
-            payload = { ...payload, download: true };
-            break;
+        if (typeof mode === "number") {
+          payload = { ...payload, page: mode };
+        } else {
+          switch (mode) {
+            case "next":
+              payload = { ...payload, page: this.nextPage };
+              break;
+            case "previous":
+              payload = { ...payload, page: this.prevPage };
+              break;
+            case "download":
+              payload = { ...payload, download: true };
+              break;
+          }
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/transactions/details`,
@@ -404,6 +435,8 @@ export default {
             totalPages,
             prevPage,
             nextPage,
+            totalDocs,
+            page,
           } = res.data.transactions;
           this.transactions = docs;
           this.hasPrevPage = hasPrevPage;
@@ -411,6 +444,8 @@ export default {
           this.totalPages = totalPages;
           this.prevPage = prevPage;
           this.nextPage = nextPage;
+          this.totalDocs = totalDocs;
+          this.page = page;
           const { failed, successful, total, pending } = res.data.summary;
           this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
           this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
@@ -449,6 +484,8 @@ export default {
         totalPages,
         prevPage,
         nextPage,
+        totalDocs,
+        page,
       } = res.data.transactions;
       this.transactions = docs;
       this.hasPrevPage = hasPrevPage;
@@ -456,13 +493,15 @@ export default {
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
+      this.totalDocs = totalDocs;
+      this.page = page;
       const { failed, successful, total, pending } = res.data.summary;
       this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
       this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
       this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
       this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (error.response && error.response.data) {
         const { message } = error.response.data;
         this.setNotification({ type: "danger", message });
@@ -497,7 +536,10 @@ tbody {
 .ref {
   font-size: 8px;
 }
-button{
+button {
   padding: 0.2rem 10px !important;
+}
+.list {
+  list-style-type: none;
 }
 </style>
