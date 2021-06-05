@@ -117,7 +117,9 @@
             </thead>
             <tbody>
               <tr v-for="(terminal, index) in terminals" :key="terminal._id">
-                <th class="text-center">{{(limit * (page - 1) ) + (index + 1) }}</th>
+                <th class="text-center">
+                  {{ limit * (page - 1) + (index + 1) }}
+                </th>
                 <td class="text-center">{{ terminal.terminalId }}</td>
                 <td class="text-center">{{ terminal.serialNo }}</td>
                 <!-- <td class="text-center">{{ terminal.currentVersion }}</td> -->
@@ -233,14 +235,15 @@ export default {
               break;
           }
         }
+
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/terminals/get`,
+          payload
+        );
         if (mode === "download") {
           const csvTran = convertArrayToCSV(res.data.terminals);
-          fileDownload(csvTran, "transactions.csv");
+          fileDownload(csvTran, "terminals.csv");
         } else {
-          const res = await axios.post(
-            `${process.env.VUE_APP_API_URL}/terminals/get`,
-            payload
-          );
           const {
             docs,
             hasNextPage,
