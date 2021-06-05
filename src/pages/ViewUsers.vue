@@ -42,17 +42,24 @@
             Filter
           </button>
         </div>
+
+        <div class="col-auto mt-2">
+          <button class="btn btn-info mb-2 mt-4" @click="refresh('refresh')">
+            Refresh
+          </button>
+        </div>
+
+        <div class="col-auto mt-2">
+          <button class="btn btn-info mb-2 mt-4" @click="refresh('download')">
+            Download
+          </button>
+        </div>
       </div>
       <div class="spinner-grow" role="status" v-if="loading === true"></div>
       <div class="alert alert-danger" role="alert" v-if="error === true">
         {{ errorMsg }}
       </div>
       <!-- <h4>Transactions</h4> -->
-      <div class="p-4 col-12">
-        <button class="btn btn-info m-2" @click="refresh('refresh')">
-          Refresh
-        </button>
-      </div>
 
       <div class="col-12">
         <card class="card-plain">
@@ -73,7 +80,9 @@
               </thead>
               <tbody>
                 <tr v-for="(user, index) in users" :key="user._id">
-                  <th class="text-center">{{ index + 1 }}</th>
+                  <th class="text-center">
+                    {{ limit * (page - 1) + (index + 1) }}
+                  </th>
                   <td class="text-center">{{ user.firstName }}</td>
                   <td class="text-center">{{ user.lastName }}</td>
                   <td class="text-center">{{ user.companyName }}</td>
@@ -98,33 +107,35 @@
       </div>
 
       <div class="mt-2 d-flex justify-content-end align-items-center">
-        <div class="p-2" v-if="hasPrevPage === true">
-          <button
-            type="submit"
-            class="btn btn-primary mb-2 mt-4"
-            @click="refresh('previous')"
-          >
-            Previous Page
-          </button>
-        </div>
-        <div class="p-2" v-if="hasNextPage === true">
-          <button
-            type="submit"
-            class="btn btn-primary mb-2 mt-4"
-            @click="refresh('next')"
-          >
-            Next Page
-          </button>
+        <div class="p-2">
+          <div class="btn">Total Records: {{ totalDocs }}</div>
         </div>
       </div>
+      <paginate
+        v-model="page"
+        :page-count="Math.ceil(totalDocs / 20)"
+        :page-range="5"
+        :margin-pages="2"
+        :click-handler="refresh"
+        :prev-text="'Prev'"
+        :next-text="'Next'"
+        :container-class="'p-2 list d-flex align-items-center h4'"
+        :page-class="'my-1 mx-4'"
+      >
+      </paginate>
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import moment from "moment";
+import Paginate from "vuejs-paginate";
+import { convertArrayToCSV } from "convert-array-to-csv";
+import fileDownload from "js-file-download";
 export default {
-  components: {},
+  components: {
+    Paginate,
+  },
   data() {
     return {
       error: false,
@@ -140,6 +151,7 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      totalDocs: 0,
       firstName: "",
       email: "",
     };
@@ -153,34 +165,50 @@ export default {
         let payload = {
           page: this.page,
           firstName: this.firstName,
-          email: this.email
+          email: this.email,
         };
-        switch (mode) {
-          case "next":
-            payload = { ...payload, page: this.nextPage };
-            break;
-          case "previous":
-            payload = { ...payload, page: this.prevPage };
-            break;
+        if (typeof mode === "number") {
+          payload = { ...payload, page: mode };
+        } else {
+          switch (mode) {
+            case "next":
+              payload = { ...payload, page: this.nextPage };
+              break;
+            case "previous":
+              payload = { ...payload, page: this.prevPage };
+              break;
+            case "download":
+              payload = { ...payload, download: true };
+              break;
+          }
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/users`,
           payload
         );
-        const {
-          docs,
-          hasNextPage,
-          hasPrevPage,
-          totalPages,
-          prevPage,
-          nextPage,
-        } = res.data.users;
-        this.users = docs;
-        this.hasPrevPage = hasPrevPage;
-        this.hasNextPage = hasNextPage;
-        this.totalPages = totalPages;
-        this.prevPage = prevPage;
-        this.nextPage = nextPage;
+        if (mode === "download") {
+          const csvTran = convertArrayToCSV(res.data.users);
+          fileDownload(csvTran, "users.csv");
+        } else {
+          const {
+            docs,
+            hasNextPage,
+            hasPrevPage,
+            totalPages,
+            prevPage,
+            nextPage,
+            totalDocs,
+            page,
+          } = res.data.users;
+          this.users = docs;
+          this.hasPrevPage = hasPrevPage;
+          this.hasNextPage = hasNextPage;
+          this.totalPages = totalPages;
+          this.prevPage = prevPage;
+          this.nextPage = nextPage;
+          this.totalDocs = totalDocs;
+          this.page = page;
+        }
       } catch (err) {
         console.log(err);
         this.error = true;
@@ -202,6 +230,8 @@ export default {
         totalPages,
         prevPage,
         nextPage,
+        totalDocs,
+        page,
       } = res.data.users;
       this.users = docs;
       this.hasPrevPage = hasPrevPage;
@@ -209,6 +239,8 @@ export default {
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
+      this.totalDocs = totalDocs;
+      this.page = page;
     } catch (err) {
       console.log(err);
       this.error = true;
@@ -233,5 +265,8 @@ th {
 }
 tbody {
   background: #fff !important;
+}
+.list {
+  list-style-type: none;
 }
 </style>

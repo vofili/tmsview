@@ -82,4 +82,7 @@ export default {
     transform: scale(1.2, 0.7);
   }
 }
+.spinner-grow {
+  z-index: 5000;
+}
 </style>
