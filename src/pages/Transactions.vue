@@ -34,7 +34,7 @@
               <option value="successful">Successful</option>
               <option value="failed">Failed</option>
               <option value="pending">Pending</option>
-              <option value="pending">Unsent Notification</option>
+              <option value="pendingNotification">Unsent Notification</option>
             </select>
           </div>
           <div
@@ -134,6 +134,11 @@
           Refresh
         </button>
       </div>
+      <div class="p-4 col-12">
+        <button class="btn btn-info" @click="sendbatchNotification()">
+          Send Batch Notification
+        </button>
+      </div>
 
       <div class="col-12">
         <card class="card-plain">
@@ -141,6 +146,9 @@
             <table class="table">
               <thead class="tms-dark">
                 <tr>
+                  <th scope="col" class="text-center">
+                    <input type="checkbox" @click="checkAll" />
+                  </th>
                   <th scope="col" class="text-center">S/N</th>
                   <th scope="col" class="text-center">Transaction Type</th>
                   <th scope="col" class="text-center">Terminal Id</th>
@@ -149,7 +157,7 @@
                   <th scope="col" class="text-center">Merchant Id</th>
                   <th scope="col" class="text-center">Amount</th>
                   <th scope="col" class="text-center">Reference</th>
-                  <th scope="col" class="text-center">Location</th>
+                  <th scope="col" class="text-center">Card Type</th>
                   <th scope="col" class="text-center">Response Code</th>
                   <th scope="col" class="text-center">Message</th>
                   <th scope="col" class="text-center">Date</th>
@@ -167,7 +175,17 @@
                   v-for="(transaction, index) in transactions"
                   :key="transaction._id"
                 >
-                  <th class="text-center">{{(limit * (page - 1) ) + (index + 1) }}</th>
+                  <th class="text-center">
+                    <input
+                      type="checkbox"
+                      name=""
+                      :value="transaction._id"
+                      v-model="unsentList"
+                    />
+                  </th>
+                  <th class="text-center">
+                    {{ limit * (page - 1) + (index + 1) }}
+                  </th>
                   <td class="text-center">
                     {{ transaction.product.toUpperCase() }}
                   </td>
@@ -190,12 +208,7 @@
                     {{ transaction.reference || "Null" }}
                   </td>
                   <td class="text-center">
-                    {{
-                      typeof transaction.location === "object" &&
-                      transaction.location
-                        ? `${transaction.location.streetNumber}, ${transaction.location.streetName}, ${transaction.location.city}, ${transaction.location.country}`
-                        : transaction.location || "Unavailable"
-                    }}
+                    {{ transaction.cardType || "NULL" }}
                   </td>
 
                   <td class="text-center">
@@ -359,6 +372,8 @@ export default {
       stan: "",
       startDate: moment().format("YYYY-MM-DD"),
       endDate: moment().format("YYYY-MM-DD"),
+      unsentList: [],
+      allChecked: false,
     };
   },
   computed: {
@@ -464,6 +479,43 @@ export default {
         }
       }
       this.loading = false;
+    },
+    async sendbatchNotification() {
+      this.$confirm("Send Batch Notification?").then(async () => {
+        this.loading = true;
+        try {
+          const res = await axios.post(
+            `${process.env.VUE_APP_API_URL}/transaction/send-batch-notification`,
+            { ids: this.unsentList }
+          );
+          const { message } = res.data;
+          this.setNotification({
+            type: "success",
+            message,
+          });
+          this.refresh("");
+        } catch (error) {
+          if (error.response && error.response.data) {
+            const { message } = error.response.data;
+            this.setNotification({ type: "danger", message });
+          } else {
+            console.log(error);
+            this.setNotification({
+              type: "danger",
+              message: "Unable to Send Notification",
+            });
+          }
+        }
+        this.loading = false;
+      });
+    },
+    checkAll() {
+      if (this.allChecked === false) {
+        this.unsentList = this.transactions.map((el) => el._id);
+      } else {
+        this.unsentList = [];
+      }
+      this.allChecked = !this.allChecked;
     },
   },
   async mounted() {
