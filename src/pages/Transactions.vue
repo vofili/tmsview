@@ -37,6 +37,16 @@
               <option value="pendingNotification">Unsent Notification</option>
             </select>
           </div>
+          <div class="col-auto">
+            <label for="inlineFormInput">Limit</label>
+            <select class="form-control" v-model="limit">
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="500">500</option>
+            </select>
+          </div>
           <div
             class="col-auto mt-2"
             v-if="auth.user.userType === 'super-admin'"
@@ -287,7 +297,7 @@
     </div> -->
     <paginate
       v-model="page"
-      :page-count="Math.ceil(totalDocs / 20)"
+      :page-count="Math.ceil(totalDocs / Number(limit))"
       :page-range="5"
       :margin-pages="2"
       :click-handler="refresh"
@@ -358,7 +368,7 @@ export default {
         maximumFractionDigits: 2,
       }),
       page: 1,
-      limit: 20,
+      limit: 50,
       totalPages: 0,
       hasPrevPage: false,
       hasNextPage: true,
@@ -419,6 +429,7 @@ export default {
           reference: this.reference,
           startDate: this.startDate,
           endDate: this.endDate,
+          limit: this.limit
         };
         if (typeof mode === "number") {
           payload = { ...payload, page: mode };
@@ -462,10 +473,10 @@ export default {
           this.totalDocs = totalDocs;
           this.page = page;
           const { failed, successful, total, pending } = res.data.summary;
-          this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
-          this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
-          this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
-          this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
+          this.statsCards[0].value = `₦${this.format.format(total.toFixed(2) / 100)}`;
+          this.statsCards[1].value = `₦${this.format.format(successful.toFixed(2) / 100)}`;
+          this.statsCards[2].value = `₦${this.format.format(pending.toFixed(2) / 100)}`;
+          this.statsCards[3].value = `₦${this.format.format(failed.toFixed(2) / 100)}`;
         }
       } catch (error) {
         if (error.response && error.response.data) {
@@ -527,6 +538,7 @@ export default {
           page: this.page,
           startDate: this.startDate,
           endDate: this.endDate,
+          limit: this.limit
         }
       );
       const {

@@ -23,6 +23,16 @@
     </div>
     <div class="col-12 d-flex align-items-center">
       <div class="form-row align-items-center">
+        <div class="col-auto">
+            <label for="inlineFormInput">Limit</label>
+            <select class="form-control" v-model="limit">
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="300">300</option>
+              <option value="500">500</option>
+            </select>
+          </div>
         <div class="col-auto mt-2">
           <label>Terminal Id</label>
           <div class="input-group mb-2">
@@ -154,7 +164,7 @@
     </div>
     <paginate
       v-model="page"
-      :page-count="Math.ceil(totalDocs / 20)"
+      :page-count="Math.ceil(totalDocs / Number(limit))"
       :page-range="5"
       :margin-pages="2"
       :click-handler="refresh"
@@ -190,7 +200,7 @@ export default {
       }),
       page: 1,
       totalDocs: 37,
-      limit: 20,
+      limit: 50,
       totalPages: 0,
       hasPrevPage: false,
       hasNextPage: true,
@@ -219,6 +229,7 @@ export default {
           merchantId: this.merchantId,
           serialNo: this.serialNo,
           agentId: this.agentId,
+          limit: this.limit
         };
         if (typeof mode === "number") {
           payload = { ...payload, page: mode };
@@ -282,6 +293,7 @@ export default {
         `${process.env.VUE_APP_API_URL}/terminals/get`,
         {
           page: this.page,
+          limit: this.limit
         }
       );
       const {
