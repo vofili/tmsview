@@ -2,6 +2,14 @@
   <div class="row transaction">
     <div class="col-12 d-flex align-items-center">
         <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label for="inlineFormInput">Limit</label>
+            <select class="form-control" v-model="limit">
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
           <div class="col-auto mt-2">
             <label>Message</label>
             <div class="input-group mb-2">
@@ -119,33 +127,33 @@
     </div>
 
     <div class="mt-2 d-flex justify-content-end align-items-center">
-      <div class="p-2" v-if="hasPrevPage === true">
-        <button
-          type="submit"
-          class="btn btn-primary mb-2 mt-4"
-          @click="refresh('previous')"
-        >
-          Previous Page
-        </button>
+        <div class="p-2">
+          <div class="btn">Total Records: {{ totalDocs }}</div>
+        </div>
       </div>
-      <div class="p-2" v-if="hasNextPage === true">
-        <button
-          type="submit"
-          class="btn btn-primary mb-2 mt-4"
-          @click="refresh('next')"
-        >
-          Next Page
-        </button>
-      </div>
-    </div>
+    <paginate
+        v-model="page"
+        :page-count="Math.ceil(totalDocs / Number(limit))"
+        :page-range="5"
+        :margin-pages="2"
+        :click-handler="refresh"
+        :prev-text="'Prev'"
+        :next-text="'Next'"
+        :container-class="'p-2 list d-flex align-items-center h4'"
+        :page-class="'my-1 mx-4'"
+      >
+      </paginate>
   </div>
 </template>
 <script>
 import axios from "axios";
 import moment from "moment";
 import { mapState } from "vuex"
+import Paginate from "vuejs-paginate";
 export default {
-  components: {},
+  components: {
+    Paginate
+  },
   data() {
     return {
       error: false,
@@ -159,7 +167,7 @@ export default {
       }),
       page: 1,
       totalDocs: 37,
-      limit: 20,
+      limit: 30,
       totalPages: 0,
       hasPrevPage: false,
       hasNextPage: true,
@@ -180,7 +188,7 @@ export default {
       try {
         this.loading = true;
         let payload = { page: this.page, value: this.value, message: this.message, field: this.field,
-          startDate: this.startDate, endDate: this.endDate
+          startDate: this.startDate, endDate: this.endDate, limit: this.limit
         };
         switch (mode) {
           case "next":
@@ -202,6 +210,8 @@ export default {
             totalPages,
             prevPage,
             nextPage,
+            page,
+            totalDocs
           } = res.data.logs;
           this.logs = docs;
           this.hasPrevPage = hasPrevPage;
@@ -209,7 +219,8 @@ export default {
           this.totalPages = totalPages;
           this.prevPage = prevPage;
           this.nextPage = nextPage;
-        
+          this.totalDocs = totalDocs;
+          this.page = page;
       } catch (err) {
         console.log(err);
         this.error = true;
@@ -224,7 +235,7 @@ export default {
       const res = await axios.post(
         `${process.env.VUE_APP_API_URL}/logs/fetch`,
         {
-          page: this.page,
+          page: this.page, limit: this.limit
         }
       );
       const {
@@ -234,6 +245,8 @@ export default {
         totalPages,
         prevPage,
         nextPage,
+        totalDocs,
+        page
       } = res.data.logs;
       this.logs = docs;
       this.hasPrevPage = hasPrevPage;
@@ -241,7 +254,8 @@ export default {
       this.totalPages = totalPages;
       this.prevPage = prevPage;
       this.nextPage = nextPage;
-    
+      this.totalDocs = totalDocs;
+      this.page = page;
     } catch (err) {
       console.log(err);
       this.error = true;
@@ -263,5 +277,8 @@ th {
 }
 tbody {
   background: #fff !important;
+}
+.list {
+  list-style-type: none;
 }
 </style>
