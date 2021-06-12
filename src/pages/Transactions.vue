@@ -560,10 +560,10 @@ export default {
       this.totalDocs = totalDocs;
       this.page = page;
       const { failed, successful, total, pending } = res.data.summary;
-      this.statsCards[0].value = `₦${total.toFixed(2) / 100}`;
-      this.statsCards[1].value = `₦${successful.toFixed(2) / 100}`;
-      this.statsCards[2].value = `₦${pending.toFixed(2) / 100}`;
-      this.statsCards[3].value = `₦${failed.toFixed(2) / 100}`;
+      this.statsCards[0].value = `₦${this.format.format(total.toFixed(2) / 100)}`;
+      this.statsCards[1].value = `₦${this.format.format(successful.toFixed(2) / 100)}`;
+      this.statsCards[2].value = `₦${this.format.format(pending.toFixed(2) / 100)}`;
+      this.statsCards[3].value = `₦${this.format.format(failed.toFixed(2) / 100)}`;
     } catch (error) {
       console.log(error);
       if (error.response && error.response.data) {
