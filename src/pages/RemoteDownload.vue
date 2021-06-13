@@ -122,6 +122,7 @@
                 <th scope="col" class="text-center">Version</th>
                 <th scope="col" class="text-center">App Name</th>
                 <th scope="col" class="text-center">Agent Name</th>
+                <th scope="col" class="text-center">Schedule Time</th>
                 <th scope="col" class="text-center">Status</th>
               </tr>
             </thead>
@@ -137,6 +138,7 @@
                 <td class="text-center">{{ terminal.appVersion }}</td>
                 <td class="text-center">{{ terminal.appName }}</td>
                 <td class="text-center">{{ terminal.agentName || "" }}</td>
+                <td class="text-center"> {{ terminal.scheduleTime ? moment(terminal.scheduleTime).format("Y-MM-D h:mm:ss a") : "NULL" }}</td>
                 <td class="text-center">
                   {{ terminal.forceUpgrade === true ? "Pending" : "Completed" }}
                 </td>
