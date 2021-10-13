@@ -107,6 +107,29 @@
         </div>
 
         <div class="row">
+          <div class="col-12">
+            <h4>Routes</h4>
+            <div class="row">
+              <div class="col-12">
+                <!-- <div class="border routes-input p-2" ref="editable" contenteditable @input="changeRoute"> {{ config.routes }} </div> -->
+                <textarea class="form-chontrol border" id="" cols="50" rows="10" v-model="config.routes"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <p-button type="info" round
+                    @click.native.prevent="submit">
+            <div
+                  class="spinner-grow"
+                  role="status"
+                  v-if="loading.show === true"
+                ></div> Save Configuration
+          </p-button>
+        </div>
+
+        <div class="row">
           <div class="col-md-6">
             <h4>Configuration Panel</h4>
 
@@ -140,25 +163,17 @@
                 </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <h4>Routes</h4>
-            <div class="row">
-              <div class="col-12">
-                <!-- <div class="border routes-input p-2" ref="editable" contenteditable @input="changeRoute"> {{ config.routes }} </div> -->
-                <textarea class="form-chontrol border" id="" cols="50" rows="10" v-model="config.routes"></textarea>
-              </div>
-            </div>
-          </div>
+          
         </div>
 
         <div class="text-center">
           <p-button type="info" round
-                    @click.native.prevent="submit">
+                    @click.native.prevent="saveConfig2">
             <div
                   class="spinner-grow"
                   role="status"
                   v-if="loading.show === true"
-                ></div> Save Configuration
+                ></div> Save Config Panel
           </p-button>
         </div>
         <div class="clearfix"></div>
@@ -204,7 +219,29 @@ export default {
     ...mapActions(["saveConfig", "setNotification", "setLoading" ]),
     submit() {
       // console.log(this.config.routes)
-      this.saveConfig(this.config)
+      this.saveConfig({
+        tmsBaseUrl: this.config.tmsBaseUrl,
+        nibbsIp: this.config.nibbsIp,
+        nibbsPort: this.config.nibbsPort,
+        nibbsEnv: this.config.nibbsEnv,
+        nibbsKey: this.config.nibbsKey,
+        posDataCode: this.config.posDataCode,
+        terminalCapability: this.config.terminalCapability,
+        contactlessCvmLimit: this.config.contactlessCvmLimit,
+        contactlessTransLimit: this.config.contactlessTransLimit,
+        processorMerchantLocation: this.config.processorMerchantLocation,
+        countryCode: this.config.countryCode , 
+        currencyCode: this.config.currencyCode,
+        routes: this.config.routes
+      })
+    },
+    saveConfig2(){
+      this.saveConfig({
+        disableAll: this.config.disableAll,
+        forceConfigAll: this.config.forceConfigAll,
+        upgradeAll: this.config.upgradeAll,
+        allNibbsRoute: this.config.allNibbsRoute,
+      })
     },
     changeRoute(){
       const routes = this.$refs.editable.innerText
