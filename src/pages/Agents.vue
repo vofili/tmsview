@@ -16,7 +16,19 @@
       >
         Add Agents To Merchant</router-link
       >
-       <router-link class="btn btn-info m-2" :to="`/dashboard/merchants`"> Back to Merchants </router-link>
+      <router-link class="btn btn-info m-2" :to="`/dashboard/merchants`">
+        Back to Merchants
+      </router-link>
+    </div>
+
+    <div class="col-md-6">
+      <label for="inlineFormInput">Phone Number</label>
+      <input type="text" class="form-control" v-model="phoneNumber">
+    </div>
+    <div class="col-md-6 mt-4">
+      <button class="btn btn-info" @click="refresh('refresh')">
+          Refresh
+        </button>
     </div>
 
     <div class="col-12">
@@ -108,6 +120,7 @@ export default {
       hasNextPage: true,
       prevPage: null,
       nextPage: null,
+      phoneNumber: ""
     };
   },
   computed: {
@@ -118,7 +131,7 @@ export default {
     async refresh(mode) {
       try {
         this.loading = true;
-        let payload = { page: this.page };
+        let payload = { page: this.page, phoneNumber: this.phoneNumber };
         switch (mode) {
           case "next":
             payload = { page: this.nextPage };
@@ -129,7 +142,7 @@ export default {
         }
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/merchant/get-agents`,
-          { ...payload, merchantId: this.$route.params.merchantId, }
+          { ...payload, merchantId: this.$route.params.merchantId }
         );
         const {
           docs,
@@ -164,14 +177,8 @@ export default {
           merchantId: this.$route.params.merchantId,
         }
       );
-      const {
-        docs,
-        hasNextPage,
-        hasPrevPage,
-        totalPages,
-        prevPage,
-        nextPage,
-      } = res.data.agents;
+      const { docs, hasNextPage, hasPrevPage, totalPages, prevPage, nextPage } =
+        res.data.agents;
       this.agents = docs;
       this.hasPrevPage = hasPrevPage;
       this.hasNextPage = hasNextPage;

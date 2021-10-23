@@ -35,6 +35,7 @@
               <option value="failed">Failed</option>
               <option value="pending">Pending</option>
               <option value="pendingNotification">Unsent Notification</option>
+              <option value="wasRequeried">Requeried Transactions</option>
             </select>
           </div>
           <div class="col-auto">
@@ -144,9 +145,12 @@
           Refresh
         </button>
       </div>
-      <div class="p-4 col-12">
-        <button class="btn btn-info" @click="sendbatchNotification()">
+      <div class="p-4 col-6">
+        <button class="btn btn-info m-2" @click="sendbatchNotification()">
           Send Batch Notification
+        </button>
+        <button class="btn btn-info m-2" @click="sendbatchRequery()">
+          Send Batch Requery
         </button>
       </div>
 
@@ -514,6 +518,35 @@ export default {
             this.setNotification({
               type: "danger",
               message: "Unable to Send Notification",
+            });
+          }
+        }
+        this.loading = false;
+      });
+    },
+    async sendbatchRequery() {
+      this.$confirm("Send Batch Requery?").then(async () => {
+        this.loading = true;
+        try {
+          const res = await axios.post(
+            `${process.env.VUE_APP_API_URL}/transaction/tms/kimono-batch-requery`,
+            { ids: this.unsentList }
+          );
+          const { message } = res.data;
+          this.setNotification({
+            type: "success",
+            message,
+          });
+          this.refresh("");
+        } catch (error) {
+          if (error.response && error.response.data) {
+            const { message } = error.response.data;
+            this.setNotification({ type: "danger", message });
+          } else {
+            console.log(error);
+            this.setNotification({
+              type: "danger",
+              message: "Unable to Send Requery",
             });
           }
         }
