@@ -434,6 +434,33 @@ export default {
       }
       this.loading = false;
     },
+    async resendNotificationv2(id) {
+      this.loading = true;
+      try {
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/transaction/resend-notificationv2`,
+          { id }
+        );
+        const { message } = res.data;
+        this.setNotification({
+          type: "success",
+          message,
+        });
+        this.refresh("");
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          this.setNotification({ type: "danger", message });
+        } else {
+          console.log(error);
+          this.setNotification({
+            type: "danger",
+            message: "Unable to Send Notification",
+          });
+        }
+      }
+      this.loading = false;
+    },
     async refresh(mode) {
       try {
         this.loading = true;
@@ -623,33 +650,7 @@ export default {
     }
     this.loading = false;
   },
-  async resendNotificationv2(id) {
-      this.loading = true;
-      try {
-        const res = await axios.post(
-          `${process.env.VUE_APP_API_URL}/transaction/resend-notificationv2`,
-          { id }
-        );
-        const { message } = res.data;
-        this.setNotification({
-          type: "success",
-          message,
-        });
-        this.refresh("");
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const { message } = error.response.data;
-          this.setNotification({ type: "danger", message });
-        } else {
-          console.log(error);
-          this.setNotification({
-            type: "danger",
-            message: "Unable to Send Notification",
-          });
-        }
-      }
-      this.loading = false;
-    },
+  
 };
 </script>
 <style scoped >
