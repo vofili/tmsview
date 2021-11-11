@@ -173,7 +173,7 @@
                   <th scope="col" class="text-center">Reference</th>
                   <th scope="col" class="text-center">Card Type</th>
                   <th scope="col" class="text-center">Response Code</th>
-                  <th scope="col" class="text-center">Message</th>
+                  <th scope="col" class="text-center">Message</th> 
                   <th scope="col" class="text-center">Date</th>
                   <th
                     scope="col"
@@ -182,6 +182,8 @@
                   >
                     Notification
                   </th>
+                  <th scope="col" class="text-center">Retries</th>
+                  <th scope="col" class="text-center">Resend</th>
                 </tr>
               </thead>
               <tbody>
@@ -263,6 +265,16 @@
                       Resend
                     </button>
                   </td>
+                  <td>{{transaction.retryCount}}</td>
+                  <td>
+                  <button
+                       
+                      class="btn btn-warning"
+                       @click="resendNotificationv2(transaction._id)"
+                    >
+                      Resend
+                    </button>
+                    </td>
                 </tr>
               </tbody>
             </table>
