@@ -441,6 +441,7 @@ export default {
           `${process.env.VUE_APP_API_URL}/transaction/resend-notificationv2`,
           { id }
         );
+        console.log(res)
         const { message } = res.data;
         this.setNotification({
           type: "success",
@@ -448,6 +449,7 @@ export default {
         });
         this.refresh("");
       } catch (error) {
+        console.log(error);
         if (error.response && error.response.data) {
           const { message } = error.response.data;
           this.setNotification({ type: "danger", message });
